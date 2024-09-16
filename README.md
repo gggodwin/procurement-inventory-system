@@ -2,7 +2,7 @@
 
 Everything was still on default no major changes yet has been committed
 
-Don`t anything yet 
+Don`t expect anything yet 
 
 
 
