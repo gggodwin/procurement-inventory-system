@@ -9,10 +9,7 @@ RewriteRule ^(.*)$ /DBPIS/$1 [L]
 RewriteCond %{REQUEST_URI} ^/DBPIS/admin/login\.php$
 RewriteCond %{HTTP:X-Requested-With} !^XMLHttpRequest$ [NC]
 RewriteRule ^ / [R=302,L]
-<<<<<<< HEAD
 
 RewriteCond %{REQUEST_URI} ^/DBPIS/admin/login\.php$
 RewriteCond %{HTTP:X-Requested-With} !^XMLHttpRequest$ [NC]
 RewriteRule ^ / [R=302,L]
-=======
->>>>>>> 3d9c45398bc3a99eef6ab66528944102947221d0
