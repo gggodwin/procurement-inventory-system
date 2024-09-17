@@ -1,4 +1,5 @@
 
+<<<<<<< HEAD
 <?php 
 include ("misc/header.php"); 
 include ("core/dbsys.ini");
@@ -17,6 +18,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST['username']) && !empty
 }
 ?>
 
+=======
+<?php include ("misc/header.php"); ?>
+>>>>>>> 3d9c45398bc3a99eef6ab66528944102947221d0
 <script>
 $(document).ready(function() {
     $.ajax({
@@ -35,6 +39,10 @@ $(document).ready(function() {
     });
 });
 </script>
+<<<<<<< HEAD
 <div id="loginContainer" class ="bg-black">
+=======
+<div id="loginContainer">
+>>>>>>> 3d9c45398bc3a99eef6ab66528944102947221d0
         <!-- The PHP content will be loaded here -->
 </div>
