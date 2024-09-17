@@ -1,0 +1,15 @@
+# Prevent directory listing
+Options -Indexes
+
+# Rewrite rules to redirect to DBPIS folder
+RewriteEngine On
+RewriteCond %{REQUEST_URI} !^/DBPIS/
+RewriteRule ^(.*)$ /DBPIS/$1 [L]
+
+RewriteCond %{REQUEST_URI} ^/DBPIS/admin/login\.php$
+RewriteCond %{HTTP:X-Requested-With} !^XMLHttpRequest$ [NC]
+RewriteRule ^ / [R=302,L]
+
+RewriteCond %{REQUEST_URI} ^/DBPIS/admin/login\.php$
+RewriteCond %{HTTP:X-Requested-With} !^XMLHttpRequest$ [NC]
+RewriteRule ^ / [R=302,L]
