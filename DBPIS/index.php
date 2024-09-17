@@ -10,7 +10,7 @@ $invalid_login = false; // Initialize the flag for invalid login
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST['username']) && !empty($_POST['password'])) {
     if ($system->get_validateuser($db, $_POST["username"], $_POST["password"])) {
-        header("Location: admin/sys_admin/main_admin.php");
+        header("Location: admin/sys_admin/index.php");
         exit(); // Ensure no further code execution after redirect
     } else {
         $invalid_login = true; // Set the flag to true if login fails
