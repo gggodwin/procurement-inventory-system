@@ -295,116 +295,123 @@ if (splinaArea4 !== null) {
 
 //   /*======== 5. MIXED CHART 01 ========*/
 var mixedChart1 = document.querySelector("#mixed-chart-1");
+
 if (mixedChart1 !== null) {
-  var mixedOptions1 = {
-    chart: {
-      height: 370,
-      type: "bar",
-      toolbar: {
-        show: false,
-      },
-    },
-    colors: ["#9e6de0", "#faafca", "#f2e052"],
-    legend: {
-      show: true,
-      position: "top",
-      horizontalAlign: "right",
-      markers: {
-        width: 20,
-        height: 5,
-        radius: 0,
-      },
-    },
-    plotOptions: {
-      bar: {
-        horizontal: false,
-        columnWidth: "50%",
-        barHeight: "10%",
-        distributed: false,
-      },
-    },
-    dataLabels: {
-      enabled: false,
-    },
+  fetch('/../admin/sys_admin/fetch/fetch_items.php')
+    .then(response => response.json())
+    .then(data => {
+      // Prepare data for the chart
+      let labels = [];
+      let currentStock = [];
+      let safetyStock = [];
 
-    stroke: {
-      show: true,
-      width: 2,
-      curve: "smooth",
-    },
+      // Extracting data from the response
+      data.forEach(item => {
+        labels.push(`${item.particular} (${item.brand})`);  // Combine particular and brand
+        currentStock.push(parseInt(item.current_stock));
+        safetyStock.push(parseInt(item.safety_stock));
+      });
 
-    series: [
-      {
-        name: "Income",
-        type: "column",
-        data: [44, 55, 57, 56, 61, 58, 63, 60, 66, 55, 47, 67],
-      },
-      {
-        name: "Expenses",
-        type: "column",
-        data: [76, 85, 101, 98, 87, 100, 91, 40, 94, 50, 47, 55],
-      },
-      {
-        name: "profit",
-        data: [50, 40, 64, 87, -15, 104, 63, 42, 32, 60, 78, 25],
-        type: "line",
-      },
-    ],
-
-    xaxis: {
-      categories: [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
-      ],
-
-      axisBorder: {
-        show: false,
-      },
-      axisTicks: {
-        show: false,
-      },
-      crosshairs: {
-        width: 40,
-      },
-    },
-
-    fill: {
-      opacity: 1,
-    },
-
-    tooltip: {
-      shared: true,
-      intersect: false,
-      followCursor: true,
-      fixed: {
-        enabled: false,
-      },
-      x: {
-        show: false,
-      },
-      y: {
-        title: {
-          formatter: function (seriesName) {
-            return seriesName;
+      var mixedOptions1 = {
+        chart: {
+          height: 370,
+          type: "bar",
+          toolbar: {
+            show: false,
           },
         },
-      },
-    },
-  };
+        colors: ["#9e6de0", "#faafca"],
+        legend: {
+          show: true,
+          position: "top",
+          horizontalAlign: "right",
+          markers: {
+            width: 20,
+            height: 5,
+            radius: 0,
+          },
+        },
+        plotOptions: {
+          bar: {
+            horizontal: false,
+            columnWidth: "50%",
+            barHeight: "10%",
+            distributed: false,
+          },
+        },
+        dataLabels: {
+          enabled: false,
+        },
 
-  var randerMixedChart1 = new ApexCharts(mixedChart1, mixedOptions1);
-  randerMixedChart1.render();
+        stroke: {
+          show: true,
+          width: 2,
+          curve: "smooth",
+        },
+
+        series: [
+          {
+            name: "Current Stock",
+            type: "column",
+            data: currentStock,
+          },
+          {
+            name: "Safety Stock",
+            type: "column",
+            data: safetyStock,
+          }
+        ],
+
+        xaxis: {
+          categories: labels,  // Using combined labels for x-axis
+          axisBorder: {
+            show: false,
+          },
+          axisTicks: {
+            show: false,
+          },
+          crosshairs: {
+            width: 40,
+          },
+          labels: {
+            rotate: -45,  // Rotate labels for better readability
+            style: {
+              fontSize: '12px',
+              colors: '#000',  // Optional: Change color for visibility
+            },
+          },
+        },
+
+        fill: {
+          opacity: 1,
+        },
+
+        tooltip: {
+          shared: true,
+          intersect: false,
+          followCursor: true,
+          fixed: {
+            enabled: false,
+          },
+          x: {
+            show: true,  // Show the x-axis value
+          },
+          y: {
+            title: {
+              formatter: function (seriesName) {
+                return seriesName;
+              },
+            },
+          },
+        },
+      };
+
+      var randerMixedChart1 = new ApexCharts(mixedChart1, mixedOptions1);
+      randerMixedChart1.render();
+    })
+    .catch(error => console.error('Error fetching data:', error));
 }
+
 
 /*======== 6. RADIAL BAR CHART 01 ========*/
 var radialBarChart1 = document.querySelector("#radial-bar-chart-1");
@@ -2001,129 +2008,133 @@ if (lineChart4 !== null) {
 /*======== 11.1 BAR CHART LARGE 01 ========*/
 var barChartLg1 = document.querySelector("#barchartlg1");
 if (barChartLg1 !== null) {
-  var barChartOptions1 = {
-    chart: {
-      height: 275,
-      type: "bar",
-      toolbar: {
-        show: false,
-      },
-    },
-    colors: ["#9e6de0", "#faafca", "#46c79e"],
-    plotOptions: {
-      bar: {
-        horizontal: false,
-        endingShape: "flat",
-        columnWidth: "55%",
-      },
-    },
-    legend: {
-      position: "bottom",
-      horizontalAlign: "left",
-    },
-    dataLabels: {
-      enabled: false,
-    },
-    stroke: {
-      show: true,
-      width: 2,
-      colors: ["transparent"],
-    },
-    series: [
-      {
-        name: "Referral",
-        data: [76, 85, 79, 88, 87, 65],
-      },
-      {
-        name: "Direct",
-        data: [44, 55, 57, 56, 61, 58],
-      },
-      {
-        name: "Organic",
-        data: [35, 41, 36, 26, 45, 48],
-      },
-    ],
-    xaxis: {
-      categories: ["4 Jan", "5 Jan", "6 Jan", "7 Jan", "8 Jan", "9 Jan"],
-    },
-    yaxis: {
-      show: false,
-    },
-    fill: {
-      opacity: 1,
-    },
-    tooltip: {
-      theme: "dark",
-      x: {
-        show: false,
-      },
-      y: {
-        formatter: function (val) {
-          return "$ " + val;
-        },
-      },
-      marker: {
-        show: true,
-      },
-    },
-  };
-  var randerBarChartLg1 = new ApexCharts(barChartLg1, barChartOptions1);
-  randerBarChartLg1.render();
+  fetch('/../admin/sys_admin/fetch/fetch_items.php') // Adjust this path as needed
+    .then(response => response.json())
+    .then(data => {
+      // Prepare data for the chart
+      let labels = [];
+      let currentStockData = [];
+      let safetyStockData = [];
 
-  var items = document.querySelectorAll(
-    "#user-acquisition .nav-underline-active-primary .nav-item"
-  );
-  items.forEach(function (item, index) {
-    item.addEventListener("click", function () {
-      if (index === 0) {
-        randerBarChartLg1.updateSeries([
+      // Extract data from the response
+      data.forEach(item => {
+        labels.push(`${item.particular} (${item.brand})`);  // Combine particular and brand for labels
+        currentStockData.push(parseInt(item.current_stock));
+        safetyStockData.push(parseInt(item.safety_stock));
+      });
+
+      var barChartOptions1 = {
+        chart: {
+          height: 275,
+          type: "bar",
+          toolbar: {
+            show: false,
+          },
+        },
+        colors: ["#9e6de0", "#faafca"],
+        plotOptions: {
+          bar: {
+            horizontal: false,
+            endingShape: "flat",
+            columnWidth: "55%",
+          },
+        },
+        legend: {
+          position: "bottom",
+          horizontalAlign: "left",
+        },
+        dataLabels: {
+          enabled: false,
+        },
+        stroke: {
+          show: true,
+          width: 2,
+          colors: ["transparent"],
+        },
+        series: [
           {
-            name: "Referral",
-            data: [76, 85, 79, 88, 87, 65],
+            name: "Current Stock",
+            data: currentStockData,
           },
           {
-            name: "Direct",
-            data: [44, 55, 57, 56, 61, 58],
+            name: "Safety Stock",
+            data: safetyStockData,
           },
-          {
-            name: "Organic",
-            data: [35, 41, 36, 26, 45, 48],
+        ],
+        xaxis: {
+          categories: labels,  // Using combined labels for x-axis
+        },
+        yaxis: {
+          show: true,
+        },
+        fill: {
+          opacity: 1,
+        },
+        tooltip: {
+          theme: "dark",
+          x: {
+            show: true,
           },
-        ]);
-      } else if (index === 1) {
-        randerBarChartLg1.updateSeries([
-          {
-            name: "iamabdus.com/referral",
-            data: [66, 50, 35, 52, 52, 45],
+          y: {
+            formatter: function (val) {
+              return "$ " + val; // Adjust the formatting as needed
+            },
           },
-          {
-            name: "github.com/referral",
-            data: [49, 59, 75, 66, 15, 20],
+          marker: {
+            show: true,
           },
-          {
-            name: "(direct)/(none)",
-            data: [55, 41, 65, 61, 53, 87],
-          },
-        ]);
-      } else if (index === 2) {
-        randerBarChartLg1.updateSeries([
-          {
-            name: "iamabdus.com",
-            data: [64, 64, 58, 45, 77, 53],
-          },
-          {
-            name: "tafcoder.com",
-            data: [85, 25, 17, 12, 74, 15],
-          },
-          {
-            name: "github.com",
-            data: [51, 48, 53, 47, 55, 63],
-          },
-        ]);
-      }
-    });
-  });
+        },
+      };
+
+      var randerBarChartLg1 = new ApexCharts(barChartLg1, barChartOptions1);
+      randerBarChartLg1.render();
+
+      // Handle tab switching
+      var items = document.querySelectorAll(
+        "#user-acquisition .nav-underline-active-primary .nav-item"
+      );
+      items.forEach(function (item, index) {
+        item.addEventListener("click", function () {
+          fetch(`/../admin/sys_admin/fetch/fetch_items.php?tab=${index}`) // Adjust to your endpoint logic
+            .then(response => response.json())
+            .then(data => {
+              // Prepare data for the clicked tab
+              let labels = [];
+              let currentStockData = [];
+              let safetyStockData = [];
+
+              data.forEach(item => {
+                labels.push(`${item.particular} (${item.brand})`);
+                currentStockData.push(parseInt(item.current_stock));
+                safetyStockData.push(parseInt(item.safety_stock));
+              });
+
+              // Update the chart series
+              randerBarChartLg1.updateSeries([
+                {
+                  name: "Current Stock",
+                  data: currentStockData,
+                },
+                {
+                  name: "Safety Stock",
+                  data: safetyStockData,
+                },
+              ]);
+
+              // Update the x-axis categories
+              randerBarChartLg1.updateOptions({
+                xaxis: {
+                  categories: labels,
+                },
+              });
+            })
+            .catch(error => console.error('Error fetching data:', error));
+        });
+      });
+    })
+    .catch(error => console.error('Error fetching initial data:', error));
 }
+
 
 /*======== 11.2 BAR CHART LARGE 02 ========*/
 var barChartLg2 = document.querySelector("#barchartlg2");
