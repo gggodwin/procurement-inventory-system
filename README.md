@@ -8,5 +8,6 @@ Update Commited:
 
 * Login
 * Upload the sql first for the login
+* Added a bar graph in the dashboard
 
 
