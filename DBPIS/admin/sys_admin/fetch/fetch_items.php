@@ -2,7 +2,7 @@
 // fetch_data.php
 include '../../../core/dbsys.ini'; // your PDO connection file
 
-$query = "SELECT particular, brand, current_stock, safety_stock FROM dbpis_items";
+$query = "SELECT particular, brand, current_stock, safety_stock, category FROM dbpis_items";
 $stmt = $db->prepare($query);
 $stmt->execute();
 

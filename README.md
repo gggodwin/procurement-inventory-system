@@ -9,6 +9,7 @@ Update Commited:
 * Login
 * Upload the sql first for the login
 * Added a bar graph in the dashboard
-* added a items table
+* Added a items table
+* Added a Filter & Insert Option
 
 

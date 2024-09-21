@@ -295,122 +295,165 @@ if (splinaArea4 !== null) {
 
 //   /*======== 5. MIXED CHART 01 ========*/
 var mixedChart1 = document.querySelector("#mixed-chart-1");
+var randerMixedChart1;
 
-if (mixedChart1 !== null) {
+// Function to render the chart
+function renderChart(data) {
+  // Prepare data for the chart
+  let labels = [];
+  let currentStock = [];
+  let safetyStock = [];
+
+  // Extracting data from the response
+  data.forEach(item => {
+    labels.push(`${item.particular} (${item.brand})`);  // Combine particular and brand
+    currentStock.push(parseInt(item.current_stock));
+    safetyStock.push(parseInt(item.safety_stock));
+  });
+
+  var mixedOptions1 = {
+    chart: {
+      height: 500,
+      type: "bar",
+      toolbar: {
+        show: true,
+      },
+    },
+    colors: ["#4287f5", "#c7425a"],
+    legend: {
+      show: true,
+      position: "top",
+      horizontalAlign: "left",
+      markers: {
+        width: 10,
+        height: 10,
+        radius: 10,
+      },
+    },
+    plotOptions: {
+      bar: {
+        horizontal: false,
+        columnWidth: "75%",
+        barHeight: "10%",
+        distributed: false,
+      },
+    },
+    dataLabels: {
+      enabled: false,
+    },
+    stroke: {
+      show: true,
+      width: 2,
+      curve: "smooth",
+    },
+    series: [
+      {
+        name: "Current Stock",
+        type: "column",
+        data: currentStock,
+      },
+      {
+        name: "Safety Stock",
+        type: "column",
+        data: safetyStock,
+      }
+    ],
+    xaxis: {
+      show: true,
+      categories: labels,  // Using combined labels for x-axis
+      axisBorder: {
+        show: true,
+        color: '#fff'
+      },
+      axisTicks: {
+        show: true,
+      },
+      crosshairs: {
+        width: 40,
+      },
+      labels: {
+        rotate: -45,  // Rotate labels for better readability
+        style: {
+          fontSize: '12px',
+          colors: '#000',  // Optional: Change color for visibility
+        },
+      },
+    },
+    fill: {
+      opacity: 1,
+    },
+    tooltip: {
+      shared: true,
+      intersect: false,
+      followCursor: true,
+      fixed: {
+        enabled: false,
+      },
+      x: {
+        show: true,
+        formatter: function (value) {
+          return `<div style="background-color: #f1f1f1; color: #000000; padding: 5px; border-radius: 3px; ">${value}</div>`;
+        },
+      },
+      y: {
+        title: {
+          formatter: function (seriesName) {
+            return seriesName;
+          },
+        },
+      },
+    },
+  };
+
+  if (randerMixedChart1) {
+    randerMixedChart1.destroy(); // Destroy the existing chart instance if it exists
+  }
+
+  randerMixedChart1 = new ApexCharts(mixedChart1, mixedOptions1);
+  randerMixedChart1.render();
+}
+
+// Initial chart render
+// Fetch data and render the initial chart
+function fetchData() {
   fetch('/../admin/sys_admin/fetch/fetch_items.php')
     .then(response => response.json())
     .then(data => {
-      // Prepare data for the chart
-      let labels = [];
-      let currentStock = [];
-      let safetyStock = [];
-
-      // Extracting data from the response
-      data.forEach(item => {
-        labels.push(`${item.particular} (${item.brand})`);  // Combine particular and brand
-        currentStock.push(parseInt(item.current_stock));
-        safetyStock.push(parseInt(item.safety_stock));
-      });
-
-      var mixedOptions1 = {
-        chart: {
-          height: 370,
-          type: "bar",
-          toolbar: {
-            show: false,
-          },
-        },
-        colors: ["#9e6de0", "#faafca"],
-        legend: {
-          show: true,
-          position: "top",
-          horizontalAlign: "right",
-          markers: {
-            width: 20,
-            height: 5,
-            radius: 0,
-          },
-        },
-        plotOptions: {
-          bar: {
-            horizontal: false,
-            columnWidth: "50%",
-            barHeight: "10%",
-            distributed: false,
-          },
-        },
-        dataLabels: {
-          enabled: false,
-        },
-
-        stroke: {
-          show: true,
-          width: 2,
-          curve: "smooth",
-        },
-
-        series: [
-          {
-            name: "Current Stock",
-            type: "column",
-            data: currentStock,
-          },
-          {
-            name: "Safety Stock",
-            type: "column",
-            data: safetyStock,
-          }
-        ],
-
-        xaxis: {
-          categories: labels,  // Using combined labels for x-axis
-          axisBorder: {
-            show: false,
-          },
-          axisTicks: {
-            show: false,
-          },
-          crosshairs: {
-            width: 40,
-          },
-          labels: {
-            rotate: -45,  // Rotate labels for better readability
-            style: {
-              fontSize: '12px',
-              colors: '#000',  // Optional: Change color for visibility
-            },
-          },
-        },
-
-        fill: {
-          opacity: 1,
-        },
-
-        tooltip: {
-          shared: true,
-          intersect: false,
-          followCursor: true,
-          fixed: {
-            enabled: false,
-          },
-          x: {
-            show: true,  // Show the x-axis value
-          },
-          y: {
-            title: {
-              formatter: function (seriesName) {
-                return seriesName;
-              },
-            },
-          },
-        },
-      };
-
-      var randerMixedChart1 = new ApexCharts(mixedChart1, mixedOptions1);
-      randerMixedChart1.render();
+      renderChart(data); // Render the full chart initially
     })
     .catch(error => console.error('Error fetching data:', error));
 }
+
+// Initial chart render
+fetchData();
+
+// Filtering thru Categories
+document.querySelectorAll('.categoryAction').forEach(item => {
+  item.addEventListener('click', function(event) {
+    event.preventDefault(); // Prevent default link behavior
+    const selectedCategory = this.getAttribute('name'); // Use name attribute
+
+    fetch('/../admin/sys_admin/fetch/fetch_items.php')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        // Filter data based on selected category
+        const filteredData = data.filter(item => item.category === selectedCategory).slice(0, 5);
+        renderChart(filteredData); // Render with the filtered data
+      })
+      .catch(error => console.error('Error fetching data:', error));
+  });
+});
+
+
+// Add event listener for the show all action
+document.getElementById('showAllAction').addEventListener('click', function() {
+  fetchData(); // Fetch and render all data again
+});
 
 
 /*======== 6. RADIAL BAR CHART 01 ========*/

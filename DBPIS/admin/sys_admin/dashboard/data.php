@@ -1,22 +1,94 @@
 
+<?php
+include_once ("../../core/dbsys.ini");
+$query = $db->query("SELECT DISTINCT category FROM dbpis_items");
+$categories = $query->fetchAll(PDO::FETCH_COLUMN);
+?>
 
         <div class="content-wrapper">
           <div class="content"><div class="row">
-  <div class="col-xl-12">
+            <div class="col-xl-12">
                     <!-- Income and Express -->
                     <div class="card card-default">
                       <div class="card-header">
                         <h2>Inventory Report</h2>
+
                         <div class="dropdown">
                           <a class="dropdown-toggle icon-burger-mini" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="false" data-display="static">
                           </a>
 
                           <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                            <a class="dropdown-item" href="#">Action</a>
-                            <a class="dropdown-item" href="#">Another action</a>
-                            <a class="dropdown-item" href="#">Something else here</a>
+                            <a class="dropdown-item" href="#" id="showAllAction">Show All</a>
+                            <?php foreach ($categories as $category): ?>
+                              <a class="dropdown-item categoryAction" href="#" name="<?php echo htmlspecialchars($category); ?>">
+                                Show only: <?php echo htmlspecialchars($category); ?>
+                              </a>
+                            <?php endforeach; ?>
                           </div>
+                          <button type="button" data-toggle="modal" data-target="#exampleModalForm" style="background: none; border: none; padding: 0;">
+                            <span class="mdi mdi-plus-box-outline" style="font-size: 24px; color: green;"></span>
+                          </button>
+
+                          <div class="modal fade" id="exampleModalForm" tabindex="-1" role="dialog" aria-labelledby="exampleModalFormTitle" aria-hidden="true">
+                              <div class="modal-dialog modal-dialog-centered" role="document">
+                                  <div class="modal-content">
+                                      <div class="modal-header">
+                                          <h5 class="modal-title" id="exampleModalFormTitle">Insert Item Data</h5>
+                                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                              <span aria-hidden="true">×</span>
+                                          </button>
+                                      </div>
+                                      <div class="modal-body">
+                                          <form id="itemForm">
+                                              <div class="row">
+                                                  <div class="col-12 col-sm-6">
+                                                  <div class="form-group">
+                                                    <label for="barcode">Barcode Id</label>
+                                                    <input type="text" class="form-control" id="barcode" name="barcode" value="" required>
+                                                </div>
+                                                  </div>
+                                                  <div class="col-12 col-sm-6">
+                                                      <div class="form-group">
+                                                          <label for="particular">Particular</label>
+                                                          <input type="text" class="form-control" id="particular" name="particular" placeholder="Enter particular" required>
+                                                      </div>
+                                                  </div>
+                                                  <div class="col-12 col-sm-6">
+                                                      <div class="form-group">
+                                                          <label for="brand">Brand</label>
+                                                          <input type="text" class="form-control" id="brand" name="brand" placeholder="Enter brand" required>
+                                                      </div>
+                                                  </div>
+                                                  <div class="col-12 col-sm-6">
+                                                      <div class="form-group">
+                                                          <label for="category">Category</label>
+                                                          <input type="text" class="form-control" id="category" name="category" placeholder="Enter category" required>
+                                                      </div>
+                                                  </div>
+                                                  <div class="col-12 col-sm-6">
+                                                      <div class="form-group">
+                                                          <label for="safety_stock">Safety Stock</label>
+                                                          <input type="number" class="form-control" id="safety_stock" name="safety_stock" placeholder="Enter safety stock" required>
+                                                      </div>
+                                                  </div>
+                                                  <div class="col-12 col-sm-6">
+                                                      <div class="form-group">
+                                                          <label for="current_stock">Current Stock</label>
+                                                          <input type="number" class="form-control" id="current_stock" name="current_stock" placeholder="Enter current stock" required>
+                                                      </div>
+                                                  </div>
+                                              </div>
+                                              <button type="submit" class="btn btn-primary">Submit</button>
+                                          </form>
+                                      </div>
+                                      <div class="modal-footer">
+                                          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                              
                         </div>
 
                       </div>
@@ -27,7 +99,9 @@
                       </div>
 
                     </div>
-</div>
+              </div>
+
+
   <div class="col-xl-12">
                     <!-- Revenue -->
                     <div class="card card-default">
@@ -216,5 +290,53 @@
 
 </div>
 </div>
-          
 
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+ $(document).ready(function() {
+    $('#itemForm').on('submit', function(e) {
+        e.preventDefault(); // Prevent default form submission
+
+        $.ajax({
+            url: 'fetch/insert_items.php', // Your PHP script for data insertion
+            type: 'POST',
+            data: $(this).serialize(), // Serialize form data
+            dataType: 'json',
+            success: function(response) {
+                if (response.success) {
+                    alert(response.message); // Show success message
+                    $('#itemForm')[0].reset(); // Reset the form
+                    $('#exampleModalForm').modal('hide'); // Hide the modal
+
+                    // Fetch updated data for the chart
+                    fetchData(); // Call the fetchData function to refresh the chart
+                } else {
+                    alert(response.message); // Show error message
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error inserting data:', error);
+                alert('An error occurred while inserting data. Please try again.'); // Optional error handling
+            }
+        });
+    });
+});
+
+$(document).ready(function() {
+    $('#exampleModalForm').on('show.bs.modal', function () {
+        $.ajax({
+            url: 'fetch/fetch_latest_id.php',
+            type: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                if (response.latest_barcode) {
+                    $('#barcode').attr('value', response.latest_barcode); // Set the placeholder with the generated barcode
+                } else {
+                    alert('Error fetching latest barcode: ' + response.error);
+                }
+            }
+        });
+    });
+});
+
+</script>
