@@ -319,7 +319,7 @@ function renderChart(data) {
         show: true,
       },
     },
-    colors: ["#4287f5", "#c7425a"],
+    colors: ["#324869", "#8fa5c7"],
     legend: {
       show: true,
       position: "top",
@@ -419,7 +419,7 @@ function fetchData() {
   fetch('/../admin/sys_admin/fetch/fetch_items.php')
     .then(response => response.json())
     .then(data => {
-      renderChart(data); // Render the full chart initially
+      renderChart(data.items); // Render the full chart initially
     })
     .catch(error => console.error('Error fetching data:', error));
 }

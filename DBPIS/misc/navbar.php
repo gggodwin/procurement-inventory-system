@@ -45,7 +45,7 @@
                     </li>
 
                     <li class="dropdown-footer">
-                      <a class="dropdown-link-item" href="sign-in.html"> <i class="mdi mdi-logout"></i> Log Out </a>
+                      <a class="dropdown-link-item" href="../../"> <i class="mdi mdi-logout"></i> Log Out </a>
                     </li>
                   </ul>
                 </li>
