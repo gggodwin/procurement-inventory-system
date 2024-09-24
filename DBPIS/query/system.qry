@@ -1,0 +1,11 @@
+<?php 
+
+class SYSTEM {
+    
+    function get_validateuser($db,$username,$password){
+        $query = "SELECT * FROM dbpis_useraccounts WHERE username = ? AND password = ?";
+        $stmt1 = $db->prepare($query);
+        $stmt1->execute(array($username,$password));
+        return $stmt1->rowCount();
+    }
+}
