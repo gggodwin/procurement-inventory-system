@@ -323,9 +323,9 @@ $(document).ready(function () {
 
   if (toaster.length != 0) {
     if (document.dir != "rtl") {
-      callToaster("toast-top-right");
+      //callToaster("toast-top-right");
     } else {
-      callToaster("toast-top-left");
+      //callToaster("toast-top-left");
     }
   }
 
@@ -372,7 +372,7 @@ $(document).ready(function () {
   var productsTable = $("#productsTable");
   if (productsTable.length != 0) {
     productsTable.DataTable({
-      info: false,
+      info: true,
       lengthChange: false,
       lengthMenu: [
         [5, 10, 15, -1],

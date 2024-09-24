@@ -424,6 +424,17 @@ function fetchData() {
     .catch(error => console.error('Error fetching data:', error));
 }
 
+//for items with low stock
+function fetchLowStock() {
+  fetch('/../admin/sys_admin/fetch/fetch_items.php')
+    .then(response => response.json())
+    .then(data => {
+      renderChart(data.low_stock_items); // Render the full chart initially
+    })
+    .catch(error => console.error('Error fetching data:', error));
+}
+
+
 // Initial chart render
 fetchData();
 
@@ -442,7 +453,7 @@ document.querySelectorAll('.categoryAction').forEach(item => {
       })
       .then(data => {
         // Filter data based on selected category
-        const filteredData = data.filter(item => item.category === selectedCategory).slice(0, 5);
+        const filteredData = data.items.filter(item => item.category === selectedCategory).slice(0, 5);
         renderChart(filteredData); // Render with the filtered data
       })
       .catch(error => console.error('Error fetching data:', error));
@@ -453,6 +464,10 @@ document.querySelectorAll('.categoryAction').forEach(item => {
 // Add event listener for the show all action
 document.getElementById('showAllAction').addEventListener('click', function() {
   fetchData(); // Fetch and render all data again
+});
+
+document.getElementById('showLowStock').addEventListener('click', function() {
+  fetchLowStock(); // Fetch and render all data again
 });
 
 

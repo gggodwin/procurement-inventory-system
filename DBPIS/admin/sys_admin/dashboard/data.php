@@ -44,12 +44,10 @@ $categories = $query->fetchAll(PDO::FETCH_COLUMN);
                   </div>
                 </div>
                 </div>
-            </div>
-
-
-                    
+            </div>  
+            
             <div class="row">
-            <div class="col-xl-12">
+              <div class="col-xl-8">
                     <div class="card card-default">
                       <div class="card-header">
                         <h2>Inventory Report</h2>
@@ -61,9 +59,12 @@ $categories = $query->fetchAll(PDO::FETCH_COLUMN);
 
                           <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
                             <a class="dropdown-item" href="#" id="showAllAction">Show All</a>
+                            <a class="dropdown-item" href="#" id="showLowStock">Show Low Stock</a>
+                            <div class="dropdown-divider"></div>
+                            <div class="dropdown-divider"></div>
                             <?php foreach ($categories as $category): ?>
                               <a class="dropdown-item categoryAction" href="#" name="<?php echo htmlspecialchars($category); ?>">
-                                Show only: <?php echo htmlspecialchars($category); ?>
+                                Show only <?php echo htmlspecialchars($category); ?>
                               </a>
                             <?php endforeach; ?>
                           </div>
@@ -82,13 +83,43 @@ $categories = $query->fetchAll(PDO::FETCH_COLUMN);
                         </div>
                       </div>
                     </div>
-            </div>
-            </div>
+              </div>
 
+              <div class="col-xl-4">
+                    
+                    <!-- Page Views  -->
+                    <div class="card card-default" id="page-views">
+                      <div class="card-header">
+                        <h2>Low Stock Items</h2>
+                      </div>
+                      <div class="card-body py-0" data-simplebar style="height: 508px;">
+                        <table class="table table-borderless table-thead-border">
+                          <thead>
+                            <tr>
+                              <th>Barcode ID</th>
+                              <th class="text-right px-3">Particular</th>
+                              <th class="text-right">Action</th>
+                            </tr>
+                          </thead>
+                            <tbody id="lowStockTableBody">
+                              <!-- Low stock items will be appended here -->
+                            </tbody>
+                        </table>
+                      </div>
+                      <div class="card-footer bg-white py-4">
+                        <a href="#" class="text-uppercase">Audience Overview</a>
+                      </div>
+                    </div>
 
-
+              </div>
           </div>
+          <?php
+              include ("tables.php");   
+            ?>
+
         </div>
+      </div>                       
+        
 
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>
@@ -108,6 +139,7 @@ $categories = $query->fetchAll(PDO::FETCH_COLUMN);
                     $('#exampleModalForm').modal('hide'); // Hide the modal
 
                     // Fetch updated data for the chart
+                    fetchLowStockItems();
                     fetchData(); // Call the fetchData function to refresh the chart
                 } else {
                     alert(response.message); // Show error message
@@ -161,5 +193,75 @@ fetch('fetch/fetch_items.php')
     console.log(data.total_low_stock_items);
   })
   .catch(error => console.error('Error fetching data:', error));
+
+
+    // Function to fetch low stock items
+    function fetchLowStockItems() {
+        fetch('fetch/fetch_items.php') // This PHP file should return the low stock items in JSON format
+        .then(response => response.json())
+        .then(data => {
+            const tableBody = document.getElementById('lowStockTableBody');
+            tableBody.innerHTML = ''; // Clear previous data
+            
+            data.low_stock_items.forEach(item => {
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td>${item.barcode}</td>
+                    <td class="text-right px-3">${item.particular} (${item.brand})</td>
+                    <td class="text-right">
+                      <button class="btn btn-primary btn-sm" onclick="viewItemDetails('${item.barcode}')">View</button>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        })
+        .catch(error => console.error('Error fetching low stock items:', error));
+    }
+
+    // Fetch low stock items on page load
+    fetchLowStockItems();
+
+
+        // Function to fetch product data
+        function fetchProductData() {
+        fetch('fetch/fetch_items.php') // Adjust the path if needed
+        .then(response => response.json())
+        .then(data => {
+            const tableBody = document.querySelector('#productsTable tbody');
+            tableBody.innerHTML = ''; // Clear previous data
+            
+            data.items.forEach(item => {
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td></td>
+                    <td>${item.particular}</td>
+                    <td>${item.brand}</td>
+                    <td>${item.current_stock}</td>
+                    <td>${item.safety_stock}</td>
+                    <td>${item.category}</td>
+                    <td>
+                      <button class="btn btn-info btn-sm">Edit</button>
+                      <button class="btn btn-danger btn-sm">Delete</button>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        })
+        .catch(error => console.error('Error fetching product data:', error));
+    }
+
+    // Fetch product data on page load
+    fetchProductData();
+
+
+// Function to view item details
+function viewItemDetails(barcode) {
+    // Redirect or open a modal to show the item details
+    alert('View details for item: ' + barcode);
+}
 
 </script>

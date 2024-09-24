@@ -8,7 +8,9 @@
               <span class="sr-only">Toggle navigation</span>
             </button>
 
-            <span class="page-title"></span>
+            <span class="page-title">
+              DASHBOARD
+            </span>
 
             <div class="navbar-right ">
               <ul class="nav navbar-nav">
