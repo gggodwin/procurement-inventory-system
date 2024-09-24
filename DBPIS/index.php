@@ -1,4 +1,4 @@
-<?php 
+<?php  
 include ("misc/header.php"); 
 include ("core/dbsys.ini");
 include_once ("query/system.qry");
