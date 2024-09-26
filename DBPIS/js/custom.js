@@ -299,36 +299,84 @@ $(document).ready(function () {
   }
 
   /*======== 11. TOASTER ========*/
-  var toaster = $("#toaster");
-  function callToaster(positionClass) {
-    toastr.options = {
-      closeButton: true,
-      debug: false,
-      newestOnTop: false,
-      progressBar: true,
-      positionClass: positionClass,
-      preventDuplicates: false,
-      onclick: null,
-      showDuration: "300",
-      hideDuration: "1000",
-      timeOut: "5000",
-      extendedTimeOut: "1000",
-      showEasing: "swing",
-      hideEasing: "linear",
-      showMethod: "fadeIn",
-      hideMethod: "fadeOut",
-    };
-    toastr.success("Welcome to Mono Dashboard", "Howdy!");
-  }
+  $(document).ready(function() {
+    var toaster = $("#toaster");
 
-  if (toaster.length != 0) {
-    if (document.dir != "rtl") {
-      //callToaster("toast-top-right");
-    } else {
-      //callToaster("toast-top-left");
+    // Function to fetch low stock items count
+    function fetchLowStockCount() {
+        $.ajax({
+            url: 'fetch/fetch_items.php', // Adjust the path to your PHP script
+            type: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                var lowStockItems = response.total_low_stock_items; // Get the low stock count
+
+                if (toaster.length != 0) {
+                    if (lowStockItems > 0) {
+                        // Call toaster for low stock items
+                        if (document.dir != "rtl") {
+                            callToaster("toast-top-right", lowStockItems);
+                        } else {
+                            callToaster("toast-top-left", lowStockItems);
+                        }
+                    } else {
+                        // Call toaster for no low stock items
+                        callSuccessToaster("toast-top-right");
+                    }
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("Error fetching low stock count:", error);
+            }
+        });
     }
-  }
 
+    function callToaster(positionClass, lowStockItems) {
+        toastr.options = {
+            closeButton: true,
+            debug: false,
+            newestOnTop: false,
+            progressBar: true,
+            positionClass: positionClass,
+            preventDuplicates: false,
+            onclick: null,
+            showDuration: "300",
+            hideDuration: "1000",
+            timeOut: "5000",
+            extendedTimeOut: "1000",
+            showEasing: "swing",
+            hideEasing: "linear",
+            showMethod: "fadeIn",
+            hideMethod: "fadeOut",
+        };
+        toastr.error(`You have ${lowStockItems} low stock items`, "Inventory Alert");
+    }
+
+    function callSuccessToaster(positionClass) {
+        toastr.options = {
+            closeButton: true,
+            debug: false,
+            newestOnTop: false,
+            progressBar: true,
+            positionClass: positionClass,
+            preventDuplicates: false,
+            onclick: null,
+            showDuration: "300",
+            hideDuration: "1000",
+            timeOut: "5000",
+            extendedTimeOut: "1000",
+            showEasing: "swing",
+            hideEasing: "linear",
+            showMethod: "fadeIn",
+            hideMethod: "fadeOut",
+        };
+        toastr.success("Inventory is sufficient, no low stock items.", "Inventory Status");
+    }
+
+    // Call the function to fetch the low stock count
+    fetchLowStockCount();
+});
+  
   /*======== 12. INFO BAR ========*/
   var infoTeoaset = $(
     "#toaster-info, #toaster-success, #toaster-warning, #toaster-danger"
@@ -369,7 +417,7 @@ $(document).ready(function () {
   NProgress.done();
 
   /*======== 14. DATA TABLE ========*/
-  var productsTable = $("#productsTable");
+  var productsTable = $("#productsTable1");
   if (productsTable.length != 0) {
     productsTable.DataTable({
       info: true,
@@ -391,6 +439,31 @@ $(document).ready(function () {
         searchPlaceholder: "Search...",
       },
     });
+  }
+
+  var productsTable1 = $("#TableLowStock");
+  if (productsTable1.length !== 0) {
+      productsTable1.DataTable({
+          info: true,
+          lengthChange: false,
+          lengthMenu: [
+              [5, 10, 15, -1],
+              [5, 10, 15, "All"],
+          ],
+          paging: false, // Completely disable pagination
+          scrollX: true,
+          order: [[0, "asc"]], // Change column index to 0 for ordering by Barcode ID
+          columnDefs: [
+              {
+                  orderable: false,
+                  targets: [2], // Disable ordering for the Action column (index 2)
+              },
+          ],
+          language: {
+              search: "_INPUT_",
+              searchPlaceholder: "Search...",
+          },
+      });
   }
 
   var productSale = $("#product-sale");

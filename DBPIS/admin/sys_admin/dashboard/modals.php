@@ -59,3 +59,31 @@
                                   </div>
                               </div>
                           </div>
+
+                                    <!-- Update Item Modal -->
+    <div class="modal fade" id="updateStockModal" tabindex="-1" role="dialog" aria-labelledby="updateStockModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateStockModalLabel">Update Stock</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="updateStockForm">
+                        <input type="hidden" id="itemBarcode" name="barcode">
+                        <div class="form-group">
+                            <label for="currentStock">Current Stock</label>
+                            <input type="number" class="form-control" id="currentStock" name="current_stock" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="safetyStock">Safety Stock</label>
+                            <input type="number" class="form-control" id="safetyStock" name="safety_stock" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>

@@ -24,10 +24,10 @@
                             <th>Current Stock</th>
                             <th>Safety Stock</th>
                             <th>Category</th>
-                            <th></th>
+                            <th>Action</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="productsTableBody">
                         <!-- Product data will be populated here -->
                     </tbody>
                 </table>

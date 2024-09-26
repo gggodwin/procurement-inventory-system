@@ -461,15 +461,15 @@ document.querySelectorAll('.categoryAction').forEach(item => {
 });
 
 
-// Add event listener for the show all action
-document.getElementById('showAllAction').addEventListener('click', function() {
-  fetchData(); // Fetch and render all data again
+document.getElementById('showAllAction').addEventListener('click', function(event) {
+  event.preventDefault(); // Prevent the default action (like form submission)
+  fetchData();// Fetch and render all data again
 });
 
-document.getElementById('showLowStock').addEventListener('click', function() {
+document.getElementById('showLowStock').addEventListener('click', function(event) {
+  event.preventDefault(); // Prevent the default action (like form submission)
   fetchLowStock(); // Fetch and render all data again
 });
-
 
 /*======== 6. RADIAL BAR CHART 01 ========*/
 var radialBarChart1 = document.querySelector("#radial-bar-chart-1");

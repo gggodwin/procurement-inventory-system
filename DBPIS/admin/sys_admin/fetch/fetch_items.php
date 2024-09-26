@@ -2,6 +2,25 @@
 // fetch_data.php
 include '../../../core/dbsys.ini'; // your PDO connection file
 
+if (isset($_GET['barcode'])) {
+    // Sanitize barcode input to prevent SQL injection
+    $barcode = $_GET['barcode'];
+    $query = "SELECT barcode, particular, brand, current_stock, safety_stock, category FROM dbpis_items WHERE barcode = :barcode";
+    $stmt = $db->prepare($query);
+    $stmt->bindParam(':barcode', $barcode, PDO::PARAM_STR);
+    $stmt->execute();
+    $item = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    // Return the item details as JSON
+    if ($item) {
+        echo json_encode($item);
+    } else {
+        echo json_encode(['error' => 'Item not found.']);
+    }
+    exit; // Exit to prevent executing the following code
+}
+
+
 // Query to fetch item data
 $query = "SELECT particular, brand, current_stock, safety_stock, category FROM dbpis_items";
 $stmt = $db->prepare($query);
