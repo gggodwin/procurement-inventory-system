@@ -9,7 +9,7 @@ $categories = $query->fetchAll(PDO::FETCH_COLUMN);
           <div class="content">
 
             <div class="row">
-              <div class="col-xl-3">
+              <div class="col-xl-4">
                   <div class="card card-default">
                       <div class="card-header">
                           <h3>SUM OF ITEMS</h3>
@@ -28,7 +28,7 @@ $categories = $query->fetchAll(PDO::FETCH_COLUMN);
               </div>
 
 
-              <div class="col-xl-3">
+              <div class="col-xl-4">
                   <div class="card card-default">
                       <div class="card-header">
                           <h3>LOW INVENTORY ITEMS</h3>
@@ -47,7 +47,7 @@ $categories = $query->fetchAll(PDO::FETCH_COLUMN);
               </div>
 
 
-                <div class="col-xl-3">
+                <div class="col-xl-4">
                 <div class="card card-default">
                   <div class="card-header">
                     <h3>PURCHASE ACQUISITIONS</h3>
@@ -149,7 +149,10 @@ $categories = $query->fetchAll(PDO::FETCH_COLUMN);
 
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>
- $(document).ready(function() {
+$(document).ready(function() {
+    $('#productsTable').DataTable(); // Initialize DataTable on page load
+
+    // Your existing form submission handling
     $('#itemForm').on('submit', function(e) {
         e.preventDefault(); // Prevent default form submission
 
@@ -164,10 +167,10 @@ $categories = $query->fetchAll(PDO::FETCH_COLUMN);
                     $('#itemForm')[0].reset(); // Reset the form
                     $('#exampleModalForm').modal('hide'); // Hide the modal
 
-                    // Fetch updated data for the chart
-                    fetchLowStockItems();
+                    // Refresh data
                     fetchProductData();
-                    fetchData(); // Call the fetchData function to refresh the chart
+                    fetchData();
+                    fetchLowStockItems();
                 } else {
                     alert(response.message); // Show error message
                 }
@@ -288,78 +291,6 @@ document.getElementById('updateStockForm').addEventListener('submit', function(e
 // Fetch low stock items on page load
 fetchLowStockItems();
 
-
-function fetchProductData() {
-    const tableBody = document.getElementById('productsTableBody');
-    
-    if (!tableBody) {
-        console.error('Table body not found!');
-        return;
-    }
-
-    fetch('fetch/fetch_items.php')
-        .then(response => response.json())
-        .then(data => {
-            console.log(data); // Debugging: check the response structure
-
-            if (!data.items || !Array.isArray(data.items)) {
-                console.error('Invalid data structure:', data);
-                return;
-            }
-
-            tableBody.innerHTML = ''; // Clear previous data
-
-            data.items.forEach(item => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td></td>
-                    <td>${item.particular}</td>
-                    <td>${item.brand}</td>
-                    <td>${item.current_stock}</td>
-                    <td>${item.safety_stock}</td>
-                    <td>${item.category}</td>
-                    <td class="text-right">
-                        <button class="btn btn-info btn-sm" onclick="editItem('${item.barcode}')">Edit</button>
-                        <button class="btn btn-danger btn-sm" onclick="deleteItem('${item.barcode}')">Delete</button>
-                    </td>
-                `;
-                tableBody.appendChild(row);
-            });
-
-            // Destroy and reinitialize DataTable
-            if ($.fn.DataTable.isDataTable('#productsTable')) {
-                $('#productsTable').DataTable().destroy();
-            }
-            
-            $('#productsTable').DataTable({
-                info: true,
-                lengthChange: false,
-                lengthMenu: [
-                    [5, 10, 15, -1],
-                    [5, 10, 15, "All"],
-                ],
-                scrollX: true,
-                order: [[1, "asc"]],
-                columnDefs: [
-                    {
-                        orderable: false,
-                        targets: [-1], // Adjust target for action buttons
-                    },
-                ],
-                language: {
-                    search: "_INPUT_",
-                    searchPlaceholder: "Search...",
-                },
-            });
-        })
-        .catch(error => console.error('Error fetching product data:', error));
-}
-
-
-
-
-    // Fetch product data on page load
-    fetchProductData();
 
 
 // Function to view item details

@@ -18,7 +18,7 @@
   <!-- PLUGINS CSS STYLE -->
   <link href="../../plugins/nprogress/nprogress.css" rel="stylesheet" />
   
-  <link href="../../plugins/DataTables/DataTables-1.10.18/css/jquery.dataTables.min.css" rel="stylesheet" />
+  <!--<link href="../../plugins/DataTables/DataTables-1.10.18/css/jquery.dataTables.min.css" rel="stylesheet" />-->
   
   <link href="../../plugins/jvectormap/jquery-jvectormap-2.0.3.css" rel="stylesheet" />
   

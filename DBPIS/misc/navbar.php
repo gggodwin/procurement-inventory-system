@@ -1,3 +1,10 @@
+<?php 
+if ($page_number == 1) {
+  $page_title = "DASHBOARD"; // Set title for dashboard
+} else if ($page_number == 2) {
+  $page_title = "INVENTORY"; // Set title for inventory
+}
+?>
 <div class="page-wrapper">
         
         <!-- Header -->
@@ -9,7 +16,7 @@
             </button>
 
             <span class="page-title">
-              DASHBOARD
+            <?php echo $page_title; ?>
             </span>
 
             <div class="navbar-right ">

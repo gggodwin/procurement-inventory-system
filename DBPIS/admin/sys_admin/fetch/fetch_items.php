@@ -22,7 +22,7 @@ if (isset($_GET['barcode'])) {
 
 
 // Query to fetch item data
-$query = "SELECT particular, brand, current_stock, safety_stock, category FROM dbpis_items";
+$query = "SELECT barcode,particular, brand, current_stock, safety_stock, category FROM dbpis_items";
 $stmt = $db->prepare($query);
 $stmt->execute();
 $items = $stmt->fetchAll(PDO::FETCH_ASSOC);

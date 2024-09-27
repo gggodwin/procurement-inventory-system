@@ -13450,7 +13450,7 @@
    position: relative;
    z-index: 10;
    color: #ffffff;
-   background-color: rgba(158, 109, 224, 0.4);
+   background-color: #324869;
  }
  .sidebar .sidebar-inner .section-title {
    padding: 1.25rem 1.56rem 1rem;
@@ -13738,6 +13738,11 @@
  .sidebar-minified .left-sidebar .sidebar-scrollbar {
    overflow: unset !important;
  }
+
+ .left-sidebar:hover {
+  background-color: #333; /* Change background color on hover */
+  color: white; /* Change text color on hover */
+}
  
  /* Sidebar Minified Hover */
  @media (min-width: 768px) {
