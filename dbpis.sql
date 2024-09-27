@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 27, 2024 at 10:13 AM
+-- Generation Time: Sep 27, 2024 at 11:57 AM
 -- Server version: 10.4.8-MariaDB
 -- PHP Version: 7.3.11
 
@@ -74,6 +74,70 @@ INSERT INTO `dbpis_items` (`id`, `barcode`, `particular`, `brand`, `category`, `
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `dbpis_prs`
+--
+
+CREATE TABLE `dbpis_prs` (
+  `prs_id` int(11) NOT NULL,
+  `prs_code` varchar(50) NOT NULL,
+  `requested_by` varchar(100) NOT NULL,
+  `department` varchar(100) DEFAULT NULL,
+  `date_requested` date NOT NULL,
+  `approval_status` enum('Pending','Approved','Rejected') DEFAULT 'Pending',
+  `approval_date` date DEFAULT NULL,
+  `total_amount` decimal(10,2) DEFAULT NULL,
+  `remarks` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `dbpis_prs`
+--
+
+INSERT INTO `dbpis_prs` (`prs_id`, `prs_code`, `requested_by`, `department`, `date_requested`, `approval_status`, `approval_date`, `total_amount`, `remarks`, `created_at`, `updated_at`) VALUES
+(1, 'PR001', 'John Doe', 'IT', '2024-09-25', 'Approved', '2024-09-26', '1500.00', 'Urgent request for IT equipment', '2024-09-27 08:27:15', '2024-09-27 08:27:15'),
+(2, 'PR002', 'Jane Smith', 'HR', '2024-09-24', 'Pending', NULL, '300.00', 'Office supplies request', '2024-09-27 08:27:15', '2024-09-27 08:27:15'),
+(3, 'PR003', 'Mark Lee', 'Finance', '2024-09-23', 'Rejected', '2024-09-25', '500.00', 'Software licenses', '2024-09-27 08:27:15', '2024-09-27 08:27:15'),
+(4, 'PR004', 'Emily Davis', 'Marketing', '2024-09-27', 'Approved', '2024-09-28', '1200.00', 'Promotional materials', '2024-09-27 08:27:15', '2024-09-27 08:27:15'),
+(5, 'PR005', 'Chris Wong', 'Operations', '2024-09-26', 'Pending', NULL, '850.00', 'Warehouse tools', '2024-09-27 08:27:15', '2024-09-27 08:27:15');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `dbpis_prsdetails`
+--
+
+CREATE TABLE `dbpis_prsdetails` (
+  `prsdetails_id` int(11) NOT NULL,
+  `prs_code` varchar(50) NOT NULL,
+  `item_code` int(11) NOT NULL,
+  `item_description` varchar(255) DEFAULT NULL,
+  `quantity` int(11) NOT NULL,
+  `unit_price` decimal(10,2) NOT NULL,
+  `total_price` decimal(10,2) GENERATED ALWAYS AS (`quantity` * `unit_price`) STORED,
+  `requested_date` date DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `dbpis_prsdetails`
+--
+
+INSERT INTO `dbpis_prsdetails` (`prsdetails_id`, `prs_code`, `item_code`, `item_description`, `quantity`, `unit_price`, `requested_date`, `created_at`, `updated_at`) VALUES
+(1, 'PR001', 1001, 'Laptop', 2, '500.00', '2024-09-25', '2024-09-27 08:28:26', '2024-09-27 08:28:26'),
+(2, 'PR001', 1002, 'Monitor', 1, '300.00', '2024-09-25', '2024-09-27 08:28:26', '2024-09-27 08:28:26'),
+(3, 'PR002', 2001, 'Stapler', 5, '10.00', '2024-09-24', '2024-09-27 08:28:26', '2024-09-27 08:28:26'),
+(4, 'PR003', 3001, 'Accounting Software', 1, '500.00', '2024-09-23', '2024-09-27 08:28:26', '2024-09-27 08:28:26'),
+(5, 'PR004', 4001, 'Flyers', 50, '1.20', '2024-09-27', '2024-09-27 08:28:26', '2024-09-27 08:28:59'),
+(6, 'PR004', 4002, 'Banners', 5, '100.00', '2024-09-27', '2024-09-27 08:28:26', '2024-09-27 08:28:26'),
+(7, 'PR005', 5001, 'Warehouse Trolley', 2, '200.00', '2024-09-26', '2024-09-27 08:28:26', '2024-09-27 08:28:26'),
+(8, 'PR005', 5002, 'Shelving Unit', 3, '150.00', '2024-09-26', '2024-09-27 08:28:26', '2024-09-27 08:28:26');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `dbpis_useraccounts`
 --
 
@@ -105,6 +169,18 @@ ALTER TABLE `dbpis_items`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `dbpis_prs`
+--
+ALTER TABLE `dbpis_prs`
+  ADD PRIMARY KEY (`prs_id`);
+
+--
+-- Indexes for table `dbpis_prsdetails`
+--
+ALTER TABLE `dbpis_prsdetails`
+  ADD PRIMARY KEY (`prsdetails_id`);
+
+--
 -- Indexes for table `dbpis_useraccounts`
 --
 ALTER TABLE `dbpis_useraccounts`
@@ -119,6 +195,18 @@ ALTER TABLE `dbpis_useraccounts`
 --
 ALTER TABLE `dbpis_items`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
+
+--
+-- AUTO_INCREMENT for table `dbpis_prs`
+--
+ALTER TABLE `dbpis_prs`
+  MODIFY `prs_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `dbpis_prsdetails`
+--
+ALTER TABLE `dbpis_prsdetails`
+  MODIFY `prsdetails_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `dbpis_useraccounts`
