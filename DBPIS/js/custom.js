@@ -302,28 +302,51 @@ $(document).ready(function () {
   $(document).ready(function() {
     var toaster = $("#toaster");
 
-    // Function to fetch low stock items count
-    function fetchLowStockCount() {
+    // Function to fetch both low stock items count and pending requisitions count
+    function fetchCounts() {
+        // Fetch low stock items
         $.ajax({
-            url: 'fetch/fetch_items.php', // Adjust the path to your PHP script
+            url: 'fetch/fetch_items.php', // Path to fetch low stock items
             type: 'GET',
             dataType: 'json',
-            success: function(response) {
-                var lowStockItems = response.total_low_stock_items; // Get the low stock count
+            success: function(itemResponse) {
+                var lowStockItems = itemResponse.total_low_stock_items; // Get low stock count
 
+                // Show toaster for low stock items
                 if (toaster.length != 0) {
                     if (lowStockItems > 0) {
-                        // Call toaster for low stock items
                         if (document.dir != "rtl") {
                             callToaster("toast-top-right", lowStockItems);
                         } else {
                             callToaster("toast-top-left", lowStockItems);
                         }
                     } else {
-                        // Call toaster for no low stock items
+                        // Call success toaster for no low stock items
                         callSuccessToaster("toast-top-right");
                     }
                 }
+                
+                // Fetch pending requisitions
+                $.ajax({
+                    url: 'fetch/fetch_prs.php', // Path to fetch pending requisitions
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(prResponse) {
+                        var pendingRequisitions = prResponse.total_pending_requisitions; // Get pending requisitions count
+
+                        // Show warning toaster for pending requisitions
+                        if (pendingRequisitions > 0) {
+                            if (document.dir != "rtl") {
+                                callWarningToaster("toast-top-right", pendingRequisitions);
+                            } else {
+                                callWarningToaster("toast-top-left", pendingRequisitions);
+                            }
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error fetching pending requisitions count:", error);
+                    }
+                });
             },
             error: function(xhr, status, error) {
                 console.error("Error fetching low stock count:", error);
@@ -373,9 +396,31 @@ $(document).ready(function () {
         toastr.success("Inventory is sufficient, no low stock items.", "Inventory Status");
     }
 
-    // Call the function to fetch the low stock count
-    fetchLowStockCount();
+    function callWarningToaster(positionClass, pendingRequisitions) {
+        toastr.options = {
+            closeButton: true,
+            debug: false,
+            newestOnTop: false,
+            progressBar: true,
+            positionClass: positionClass,
+            preventDuplicates: false,
+            onclick: null,
+            showDuration: "300",
+            hideDuration: "1000",
+            timeOut: "5000",
+            extendedTimeOut: "1000",
+            showEasing: "swing",
+            hideEasing: "linear",
+            showMethod: "fadeIn",
+            hideMethod: "fadeOut",
+        };
+        toastr.warning(`You have ${pendingRequisitions} pending requisitions`, "Pending Requisitions Alert");
+    }
+
+    // Call the function to fetch the counts
+    fetchCounts();
 });
+
   
   /*======== 12. INFO BAR ========*/
   var infoTeoaset = $(

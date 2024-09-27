@@ -46,13 +46,13 @@
                         </a>
                     </li>
                     <li class="<?php echo ($current_page == 'purchase') ? 'active' : ''; ?>">
-                        <a class="sidenav-item-link" href="/admin/sys_admin/main_admin.php">
+                        <a class="sidenav-item-link" href="/admin/sys_admin/main_prs.php">
                             <i class="mdi mdi-clipboard-check-outline"></i>
-                            <span class="nav-text">Purchase Acquisition</span>
+                            <span class="nav-text">Purchase Requisition</span>
                         </a>
                     </li>
                     <li class="<?php echo ($current_page == 'profile') ? 'active' : ''; ?>">
-                        <a class="sidenav-item-link" href="/admin/sys_admin/main_admin.php">
+                        <a class="sidenav-item-link" href="/admin/sys_admin/main_user.php">
                             <i class="mdi mdi-account"></i>
                             <span class="nav-text">User Profile</span>
                         </a>

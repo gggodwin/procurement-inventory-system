@@ -3,7 +3,12 @@ if ($page_number == 1) {
   $page_title = "DASHBOARD"; // Set title for dashboard
 } else if ($page_number == 2) {
   $page_title = "INVENTORY"; // Set title for inventory
+} else if ($page_number == 3) {
+  $page_title = "PURCHASE REQUISITION"; // Set title for inventory
+} else if ($page_number == 4) {
+  $page_title = "USER PROFILE"; // Set title for inventory
 }
+
 ?>
 <div class="page-wrapper">
         

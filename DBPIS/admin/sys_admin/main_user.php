@@ -1,9 +1,9 @@
 <?php 
-$current_page = 'purchase';
-$page_number = 3;
+$current_page = 'profile';
+$page_number = 4;
 include ("../../misc/header_main.php");
 include ("../../misc/sidebar.php");
 include ("../../misc/navbar.php");
-include ("prs/prs.php");
+include ("user/user_profile.php");
 include ("../../misc/footer_main.php");
 ?>

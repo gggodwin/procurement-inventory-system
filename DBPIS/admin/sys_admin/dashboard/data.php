@@ -50,7 +50,7 @@ $categories = $query->fetchAll(PDO::FETCH_COLUMN);
                 <div class="col-xl-4">
                 <div class="card card-default">
                   <div class="card-header">
-                    <h3>PURCHASE ACQUISITIONS</h3>
+                    <h3>PURCHASE REQUISITION</h3>
                         <div class="sub-title">
                             <span class="mr-1">Amount of PRS</span> 
                         </div>

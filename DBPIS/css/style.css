@@ -5682,6 +5682,7 @@
    flex-basis: 350px;
    max-width: 350px;
    font-size: 0.875rem;
+   color: black;
    background-color: rgba(255, 255, 255, 0.85);
    background-clip: padding-box;
    border: 1px solid rgba(0, 0, 0, 0.1);
@@ -11245,7 +11246,7 @@
  }
  
  .text-warning {
-   color: #fec400 !important;
+   color: #bf9404 !important;
  }
  
  a.text-warning:hover, a.text-warning:focus {
@@ -17195,6 +17196,7 @@
    background-color: #242f3f;
  }
  .toast.toast-warning {
+  
    background-color: #fec400;
  }
  .toast.toast-error {
