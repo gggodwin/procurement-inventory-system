@@ -33,26 +33,26 @@
                 <!-- sidebar menu -->
                 <ul class="nav sidebar-inner" id="sidebar-menu">
                     <li class="<?php echo ($current_page == 'dashboard') ? 'active' : ''; ?>">
-                        <a class="sidenav-item-link" href="/admin/sys_admin/main_admin.php">
+                        <a class="sidenav-item-link" href="../sys_admin/main_admin.php">
                             <i class="mdi mdi-briefcase-account-outline"></i>
                             <span class="nav-text">Business Dashboard</span>
                         </a>
                     </li>
                     <li class="section-title">Apps</li>
                     <li class="<?php echo ($current_page == 'inventory') ? 'active' : ''; ?>">
-                        <a class="sidenav-item-link" href="/admin/sys_admin/main_inventory.php">
+                        <a class="sidenav-item-link" href="../sys_admin/main_inventory.php">
                             <i class="mdi mdi-table-plus"></i>
                             <span class="nav-text">Inventory</span>
                         </a>
                     </li>
                     <li class="<?php echo ($current_page == 'purchase') ? 'active' : ''; ?>">
-                        <a class="sidenav-item-link" href="/admin/sys_admin/main_prs.php">
+                        <a class="sidenav-item-link" href="../sys_admin/main_prs.php">
                             <i class="mdi mdi-clipboard-check-outline"></i>
                             <span class="nav-text">Purchase Requisition</span>
                         </a>
                     </li>
                     <li class="<?php echo ($current_page == 'profile') ? 'active' : ''; ?>">
-                        <a class="sidenav-item-link" href="/admin/sys_admin/main_user.php">
+                        <a class="sidenav-item-link" href="../sys_admin/main_user.php">
                             <i class="mdi mdi-account"></i>
                             <span class="nav-text">User Profile</span>
                         </a>
