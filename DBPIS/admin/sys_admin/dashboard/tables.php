@@ -56,6 +56,7 @@ function fetchProductData() {
     fetch('fetch/fetch_items.php') // Adjust the path if needed
         .then(response => response.json())
         .then(data => {
+            console.log('Fetched data:', data); // Log the entire response
             data.items.forEach(item => {
                 table.row.add([
                     item.barcode,
@@ -70,10 +71,11 @@ function fetchProductData() {
                               <i class="fas fa-cog"></i>
                           </button>
                           <div class="dropdown-menu">
-                              <button class="dropdown-item" onclick="editItem(${item.id})">
+                              <button class="dropdown-item" onclick="editItem(${item.barcode})">
                                   <i class="fas fa-edit"></i> Edit
                               </button>
-                              <button class="dropdown-item" onclick="deleteItem(${item.id})">
+                              console.log('Item:', item);
+                              <button class="dropdown-item" onclick="deleteItem(${item.barcode})">
                                   <i class="fas fa-trash-alt"></i> Delete
                               </button>
                           </div>
@@ -99,5 +101,26 @@ $(document).ready(function() {
     // Fetch product data after initializing the DataTable
     fetchProductData();
 });
+
+function deleteItem(barcode) {
+    console.log(barcode);
+
+    if (confirm('Are you sure you want to delete this item?')) {
+        fetch(`fetch/delete_items.php?id=${barcode}`, {
+            method: 'DELETE' // Adjust the method if needed
+        })
+        .then(response => {
+            if (response.ok) {
+                // Remove the row from the DataTable
+                const table = $('#productsTable').DataTable();
+                table.row($(`button[onclick="deleteItem(${barcode})"]`).closest('tr')).remove().draw();
+                alert('Item deleted successfully.');
+            } else {
+                alert('Failed to delete the item.');
+            }
+        })
+        .catch(error => console.error('Error deleting item:', error));
+    }
+}
 
 </script>

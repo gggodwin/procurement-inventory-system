@@ -8,4 +8,20 @@ class SYSTEM {
         $stmt1->execute(array($username,$password));
         return $stmt1->rowCount();
     }
+
+    function delete_item($db,$id){
+        $itemId = $_GET['id'];
+
+        $stmt = $conn->prepare("DELETE FROM products WHERE id = ?");
+        $stmt->bind_param("i", $itemId);
+
+        if ($stmt->execute()) {
+            // Item deleted successfully
+            http_response_code(200);
+        } else {
+            // Error occurred
+            http_response_code(500);
+        }
+    }
+
 }
