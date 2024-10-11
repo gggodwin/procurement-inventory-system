@@ -1,5 +1,5 @@
 # Prevent directory listing
-# Options -Indexes
+Options -Indexes
 
 # Rewrite rules to redirect to DBPIS folder
 RewriteEngine On

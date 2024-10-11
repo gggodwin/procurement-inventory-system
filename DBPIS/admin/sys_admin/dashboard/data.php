@@ -19,9 +19,9 @@ $categories = $query->fetchAll(PDO::FETCH_COLUMN);
                       </div>
                       <div class="card-body">
                           <div class="bg-primary d-flex justify-content-between flex-wrap p-5 text-white align-items-lg-end">
-                              <div class="d-flex flex-column">
-                                  <a href="#itemTable" class="h1 text-white mdi mdi-package-variant-closed" id="totalItemsCount" style="text-decoration: none;"></a>
-                              </div>
+                          <div class="d-flex flex-column">
+                            <a href="#itemTable" class="h1 text-white mdi mdi-package-variant-closed" id="totalItemsCount" style="text-decoration: none;">0</a>
+                        </div>
                           </div>
                       </div>
                   </div>
@@ -39,7 +39,7 @@ $categories = $query->fetchAll(PDO::FETCH_COLUMN);
                       <div class="card-body">
                           <div class="bg-primary d-flex justify-content-between flex-wrap p-5 text-white align-items-lg-end">
                               <div class="d-flex flex-column">
-                                  <a href="#lowItem" class="h1 text-white mdi mdi-package-variant-closed" id="totalLowStock" style="text-decoration: none;">0</a>
+                                  <a href="#lowItem" class="h1 text-white mdi mdi-package-variant-closed" id="totalLowStock" style="text-decoration: none;"></a>
                               </div>
                           </div>
                       </div>
@@ -89,7 +89,7 @@ $categories = $query->fetchAll(PDO::FETCH_COLUMN);
                             <?php endforeach; ?>
                           </div>
                           <button type="button" data-toggle="modal" data-target="#exampleModalForm" style="background: none; border: none; padding: 0;">
-                            <span class="mdi mdi-plus-box-outline" style="font-size: 24px; color: green;"></span>
+                            <span class="mdi mdi-file-plus" style="font-size: 24px; color: green;"></span>
                           </button>
                             <?php
                               include ("modals.php");  
@@ -113,7 +113,7 @@ $categories = $query->fetchAll(PDO::FETCH_COLUMN);
                               <h2>Low Stock Items</h2>
                           </div>
                           <div class="card-body py-0" data-simplebar style="height: 508px;">
-                              <table class="table table-borderless table-thead-border" id="TableLowStock">
+                              <table class="table table-borderless table-thead-border">
                                   <thead>
                                       <tr>
                                           <th>Barcode ID</th>
@@ -168,7 +168,9 @@ $(document).ready(function() {
                     $('#exampleModalForm').modal('hide'); // Hide the modal
 
                     // Refresh data
+                    totalNumberItems();
                     fetchProductData();
+                    totalNumberLowStock();
                     fetchData();
                     fetchLowStockItems();
                 } else {
@@ -201,6 +203,7 @@ $(document).ready(function() {
 });
 
 // Fetch total number of items
+function totalNumberItems(){
 fetch('fetch/fetch_items.php')
   .then(response => response.json())
   .then(data => {
@@ -208,8 +211,14 @@ fetch('fetch/fetch_items.php')
     console.log(data.items);
   })
   .catch(error => console.error('Error fetching data:', error));
+}
+
+$(document).ready(function() {
+    totalNumberItems(); // Call the function when the page loads
+});
 
 // Fetch total number of low stock items
+function totalNumberLowStock(){
 fetch('fetch/fetch_items.php')
   .then(response => response.json())
   .then(data => {
@@ -217,6 +226,11 @@ fetch('fetch/fetch_items.php')
     console.log(data.total_low_stock_items);
   })
   .catch(error => console.error('Error fetching data:', error));
+}
+
+$(document).ready(function() {
+    totalNumberLowStock(); // Call the function when the page loads
+});
 
 // Function to fetch low stock items
 function fetchLowStockItems() {
@@ -261,7 +275,6 @@ function viewItemDetails(barcode) {
     .catch(error => console.error('Error fetching item details:', error));
 }
 
-
 // Handle form submission for updating stock
 document.getElementById('updateStockForm').addEventListener('submit', function(event) {
     event.preventDefault();
@@ -290,6 +303,65 @@ document.getElementById('updateStockForm').addEventListener('submit', function(e
 
 // Fetch low stock items on page load
 fetchLowStockItems();
+
+
+function viewFullItemDetails(barcode) {
+    fetch(`fetch/fetch_items.php?barcode=${barcode}`)
+        .then(response => response.json())
+        .then(item => {
+            console.log("Fetched item data:", item); // Check what is fetched
+            if (item) {
+                // Populate modal fields with item details
+                document.getElementById('updateItemBarcode').value = item.barcode; // Set the barcode
+                document.getElementById('updateItemParticular').value = item.particular; // Set the particular
+                document.getElementById('updateItemBrand').value = item.brand; // Set the brand
+                document.getElementById('updateItemCurrentStock').value = item.current_stock; // Set the current stock
+                document.getElementById('updateItemSafetyStock').value = item.safety_stock; // Set the safety stock
+                document.getElementById('updateItemCategory').value = item.category; // Set the category
+
+                // Show the modal
+                $('#updateItemDetailsModal').modal('show');
+            } else {
+                console.error('Item not found.');
+            }
+        })
+        .catch(error => console.error('Error fetching item details:', error));
+}
+
+
+document.getElementById('updateItemDetailsForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent default form submission
+
+    const formData = new FormData(this); // Collect form data
+
+    // Send the form data using a fetch POST request
+    fetch('fetch/update_item.php', {
+        method: 'POST',
+        body: formData,
+    })
+    .then(response => response.json()) // Parse the JSON response
+    .then(result => {
+        console.log(result); // Log server response
+
+        if (result.success) {
+            // Show success alert
+            alert('Update successful!');
+
+            // Hide the modal after a successful update
+            $('#updateItemDetailsModal').modal('hide');
+
+            // Call the functions to refresh the data on the page
+            fetchLowStockItems();
+            fetchProductData();
+            fetchData();
+        } else {
+            // Show error alert with the server response message
+            alert('Update failed: ' + result.message);
+        }
+    })
+    .catch(error => console.error('Error updating item stock:', error)); // Handle any errors
+});
+
 
 
 

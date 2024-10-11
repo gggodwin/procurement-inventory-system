@@ -9,11 +9,15 @@
         <div class="card card-default">
             <div class="card-header">
                 <h2>Products Inventory</h2>
+                
                 <div class="dropdown">
                     <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Action
                     </a>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#exampleModalForm">
+                            <span class="mdi mdi-file-plus"></span> Insert
+                        </a>
                         <a class="dropdown-item" href="#" id="importButton">
                             <i class="mdi mdi-upload"></i> Import
                         </a>
@@ -49,15 +53,61 @@
 </div>
 
 <script>
+
+
+function deleteItem(barcode, rowElement) {
+    if (confirm("Are you sure you want to delete this item?")) {
+        console.log("Attempting to delete item with barcode:", barcode);
+
+        const formData = new FormData();
+        formData.append('delete', true);
+        formData.append('barcode', barcode);
+
+        fetch('fetch/fetch_items.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Server response:", data);
+
+            if (data.success) {
+                alert("Item deleted successfully!");
+                // Remove the row from DataTable
+                const table = $('#productsTable').DataTable();
+                table.row($(rowElement).parents('tr')).remove().draw(false); // Remove the row without redrawing the entire table
+                fetchLowStockItems();
+                fetchData();
+                totalNumberLowStock();
+                totalNumberItems(); 
+
+            } else {
+                alert("Failed to delete the item. Please try again.");
+                console.error("Error from server:", data.message);
+            }
+        })
+        .catch(error => {
+            console.error("Error during fetch:", error);
+            alert("An error occurred while deleting the item.");
+        });
+    }
+}
+
 function fetchProductData() {
-    const table = $('#productsTable').DataTable(); // Initialize DataTable instance
+    const table = $('#productsTable').DataTable();
     table.clear(); // Clear the existing table data
 
     fetch('fetch/fetch_items.php') // Adjust the path if needed
         .then(response => response.json())
         .then(data => {
             data.items.forEach(item => {
-                table.row.add([
+                // Append the row with a reference to the current row element
+                const rowNode = table.row.add([
                     item.barcode,
                     item.particular,
                     item.brand,
@@ -70,16 +120,18 @@ function fetchProductData() {
                               <i class="fas fa-cog"></i>
                           </button>
                           <div class="dropdown-menu">
-                              <button class="dropdown-item" onclick="editItem(${item.id})">
+                              <button class="dropdown-item" onclick="viewFullItemDetails(${item.barcode})">
                                   <i class="fas fa-edit"></i> Edit
                               </button>
-                              <button class="dropdown-item" onclick="deleteItem(${item.id})">
+                              <button class="dropdown-item" onclick="deleteItem(${item.barcode}, this)">
                                   <i class="fas fa-trash-alt"></i> Delete
                               </button>
                           </div>
                       </div>
                     `
-                ]);
+                ]).node(); // Capture the row node for later reference
+
+                $(rowNode).attr('id', `item-${item.barcode}`); // Optionally add an ID to the row
             });
 
             table.draw(); // Redraw the DataTable to display the new data
@@ -88,16 +140,16 @@ function fetchProductData() {
 }
 
 $(document).ready(function() {
-    // Initialize DataTable
     $('#productsTable').DataTable({
-        paging: true,  // Enable pagination
-        searching: true, // Enable search functionality
-        pageLength: 5, // Default number of records per page
-        lengthMenu: [5, 10, 25, 50, 100], // Options for number of records per page
+        paging: true,
+        searching: true,
+        pageLength: 5,
+        lengthMenu: [5, 10, 25, 50, 100],
     });
 
-    // Fetch product data after initializing the DataTable
     fetchProductData();
 });
+
+
 
 </script>

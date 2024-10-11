@@ -355,25 +355,33 @@ $(document).ready(function () {
     }
 
     function callToaster(positionClass, lowStockItems) {
-        toastr.options = {
-            closeButton: true,
-            debug: false,
-            newestOnTop: false,
-            progressBar: true,
-            positionClass: positionClass,
-            preventDuplicates: false,
-            onclick: null,
-            showDuration: "300",
-            hideDuration: "1000",
-            timeOut: "5000",
-            extendedTimeOut: "1000",
-            showEasing: "swing",
-            hideEasing: "linear",
-            showMethod: "fadeIn",
-            hideMethod: "fadeOut",
-        };
-        toastr.error(`You have ${lowStockItems} low stock items`, "Inventory Alert");
-    }
+      toastr.options = {
+          closeButton: true,
+          debug: false,
+          newestOnTop: false,
+          progressBar: true,
+          positionClass: positionClass,
+          preventDuplicates: false,
+          onclick: function() {
+              // Scroll to the element with id "lowItem" when the toaster is clicked
+              const lowItemSection = document.getElementById("lowItem");
+              if (lowItemSection) {
+                  lowItemSection.scrollIntoView({ behavior: 'smooth' }); // Smooth scroll to the section
+              } else {
+                  console.warn("Element with id 'lowItem' not found.");
+              }
+          },
+          showDuration: "300",
+          hideDuration: "1000",
+          timeOut: "5000",
+          extendedTimeOut: "1000",
+          showEasing: "swing",
+          hideEasing: "linear",
+          showMethod: "fadeIn",
+          hideMethod: "fadeOut",
+      };
+      toastr.error(`You have ${lowStockItems} low stock items`, "Inventory Alert");
+  }
 
     function callSuccessToaster(positionClass) {
         toastr.options = {

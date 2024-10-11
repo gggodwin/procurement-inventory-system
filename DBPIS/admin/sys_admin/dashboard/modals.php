@@ -7,7 +7,7 @@
                                       <div class="modal-header">
                                           <h5 class="modal-title" id="exampleModalFormTitle">Insert Item Data</h5>
                                           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                              <span aria-hidden="true">×</span>
+                                              <span aria-hidden="true"></span>
                                           </button>
                                       </div>
                                       <div class="modal-body">
@@ -32,10 +32,16 @@
                                                       </div>
                                                   </div>
                                                   <div class="col-12 col-sm-6">
-                                                      <div class="form-group">
-                                                          <label for="category">Category</label>
-                                                          <input type="text" class="form-control" id="category" name="category" placeholder="Enter category" required>
-                                                      </div>
+                                                    <div class="form-group">
+                                                        <label for="updateItemCategory">Category</label>
+                                                        <select class="form-control" id="updateItemCategory" name="category">
+                                                            <?php foreach ($categories as $category): ?>
+                                                                <option value="<?php echo htmlspecialchars($category); ?>">
+                                                                    <?php echo htmlspecialchars($category); ?>
+                                                                </option>
+                                                            <?php endforeach; ?>
+                                                        </select>
+                                                    </div>
                                                   </div>
                                                   <div class="col-12 col-sm-6">
                                                       <div class="form-group">
@@ -60,30 +66,76 @@
                               </div>
                           </div>
 
-                                    <!-- Update Item Modal -->
-    <div class="modal fade" id="updateStockModal" tabindex="-1" role="dialog" aria-labelledby="updateStockModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="updateStockModalLabel">Update Stock</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="updateStockForm">
-                        <input type="hidden" id="itemBarcode" name="barcode">
-                        <div class="form-group">
-                            <label for="currentStock">Current Stock</label>
-                            <input type="number" class="form-control" id="currentStock" name="current_stock" required>
+                                                        <!-- Update Item Modal -->
+                        <div class="modal fade" id="updateStockModal" tabindex="-1" role="dialog" aria-labelledby="updateStockModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="updateStockModalLabel">Update Stock</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form id="updateStockForm">
+                                            <input type="hidden" id="itemBarcode" name="barcode">
+                                            <div class="form-group">
+                                                <label for="currentStock">Current Stock</label>
+                                                <input type="number" class="form-control" id="currentStock" name="current_stock" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="safetyStock">Safety Stock</label>
+                                                <input type="number" class="form-control" id="safetyStock" name="safety_stock" required>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">Update</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="safetyStock">Safety Stock</label>
-                            <input type="number" class="form-control" id="safetyStock" name="safety_stock" required>
+
+                        <!-- Update Item Details Modal -->
+                        <div class="modal fade" id="updateItemDetailsModal" tabindex="-1" role="dialog" aria-labelledby="updateItemDetailsModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="updateItemDetailsModalLabel">Update Item Details</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form id="updateItemDetailsForm"> <!-- Changed the form ID -->
+                                            <input type="hidden" id="updateItemBarcode" name="barcode">
+                                            <div class="form-group">
+                                                <label for="updateItemParticular">Particular</label>
+                                                <input type="text" class="form-control" id="updateItemParticular" name="particular">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="updateItemBrand">Brand</label>
+                                                <input type="text" class="form-control" id="updateItemBrand" name="brand">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="updateItemCurrentStock">Current Stock</label>
+                                                <input type="number" class="form-control" id="updateItemCurrentStock" name="current_stock">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="updateItemSafetyStock">Safety Stock</label>
+                                                <input type="number" class="form-control" id="updateItemSafetyStock" name="safety_stock">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="updateItemCategory">Category</label>
+                                                <select class="form-control" id="updateItemCategory" name="category">
+                                                    <?php foreach ($categories as $category): ?>
+                                                        <option value="<?php echo htmlspecialchars($category); ?>">
+                                                            <?php echo htmlspecialchars($category); ?>
+                                                        </option>
+                                                    <?php endforeach; ?>
+                                                </select>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">Update</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <button type="submit" class="btn btn-primary">Update</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
