@@ -1,3 +1,9 @@
+<?php
+include_once ("../../core/dbsys.ini");
+$query = $db->query("SELECT DISTINCT category FROM dbpis_items");
+$categories = $query->fetchAll(PDO::FETCH_COLUMN);
+?>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
 <style>
@@ -23,11 +29,18 @@
         }
     }
 
+    @media (max-width: 1600px) {
+        .viewport {
+            width: 800px; /* Adjust width for tablets */
+            height: 150px; /* Adjust height for tablets */
+        }
+    }
+
     /* Media query for mobile devices */
     @media (max-width: 480px) {
         .viewport {
             width: 300px; /* Adjust width for mobile phones */
-            height: 100px; /* Adjust height for mobile phones */
+            height: 200px; /* Adjust height for mobile phones */
         }
     }
 </style>

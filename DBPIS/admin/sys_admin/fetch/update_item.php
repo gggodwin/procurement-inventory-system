@@ -9,6 +9,7 @@ $brand = $_POST['brand']; // Added
 $current_stock = $_POST['current_stock'];
 $safety_stock = $_POST['safety_stock'];
 $category = $_POST['category']; // Added
+$units = $_POST['units']; // Added
 
 // Prepare and execute the update query
 $query = "UPDATE dbpis_items SET 
@@ -16,10 +17,11 @@ $query = "UPDATE dbpis_items SET
           brand = ?, 
           category = ?, 
           current_stock = ?, 
-          safety_stock = ? 
+          safety_stock = ?, 
+          units = ? 
           WHERE barcode = ?";
 $stmt = $db->prepare($query);
-$success = $stmt->execute([$particular, $brand, $category, $current_stock, $safety_stock, $barcode]);
+$success = $stmt->execute([$particular, $brand, $category, $current_stock, $safety_stock, $units, $barcode]);
 
 // Return JSON response
 if ($success) {

@@ -73,18 +73,18 @@ $categories = $query->fetchAll(PDO::FETCH_COLUMN);
                         <h2>Inventory Report</h2>
 
                         <div class="dropdown">
-                          <a class="dropdown-toggle icon-burger-mini" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
-                            aria-haspopup="true" aria-expanded="false" data-display="static">
+                          <a class="dropdown-toggle mdi mdi-filter" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false" data-display="static" style="font-size: 24px;">
                           </a>
 
                           <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                            <a class="dropdown-item" href="#" id="showAllAction">Show All</a>
-                            <a class="dropdown-item" href="#" id="showLowStock">Show Low Stock</a>
+                            <a class="dropdown-item" href="#" id="showAllAction">View All</a>
+                            <a class="dropdown-item" href="#" id="showLowStock">View Low Stock</a>
                             <div class="dropdown-divider"></div>
                             <div class="dropdown-divider"></div>
                             <?php foreach ($categories as $category): ?>
                               <a class="dropdown-item categoryAction" href="#" name="<?php echo htmlspecialchars($category); ?>">
-                                Show only <?php echo htmlspecialchars($category); ?>
+                                View by <?php echo htmlspecialchars($category); ?>
                               </a>
                             <?php endforeach; ?>
                           </div>
@@ -127,7 +127,7 @@ $categories = $query->fetchAll(PDO::FETCH_COLUMN);
                               </table>
                           </div>
                           <div class="card-footer bg-white py-4">
-                              <a href="#" class="text-uppercase">Audience Overview</a>
+                              <a href="#itemTable" class="text-uppercase">View All Items</a>
                           </div>
                       </div>
                   </div>
@@ -318,7 +318,7 @@ function viewFullItemDetails(barcode) {
                 document.getElementById('updateItemCurrentStock').value = item.current_stock; // Set the current stock
                 document.getElementById('updateItemSafetyStock').value = item.safety_stock; // Set the safety stock
                 document.getElementById('updateItemCategory').value = item.category; // Set the category
-
+                document.getElementById('updateItemUnits').value = item.units;
                 // Show the modal
                 $('#updateItemDetailsModal').modal('show');
             } else {

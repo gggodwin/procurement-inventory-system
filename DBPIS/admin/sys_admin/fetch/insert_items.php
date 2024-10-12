@@ -10,11 +10,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $category = $_POST['category'];
         $safety_stock = $_POST['safety_stock'];
         $current_stock = $_POST['current_stock'];
+        $units = $_POST['units']; // Add units retrieval
         $last_updated = date('Y-m-d H:i:s'); // Current timestamp
 
         // Insert query
-        $sql = "INSERT INTO dbpis_items (barcode, particular, brand, category, safety_stock, current_stock, last_updated) 
-                VALUES (:barcode, :particular, :brand, :category, :safety_stock, :current_stock, :last_updated)";
+        $sql = "INSERT INTO dbpis_items (barcode, particular, brand, category, safety_stock, current_stock, units, last_updated) 
+                VALUES (:barcode, :particular, :brand, :category, :safety_stock, :current_stock, :units, :last_updated)"; // Include units in the query
         $stmt = $db->prepare($sql); // Assuming $db is your PDO connection
 
         // Execute the statement
@@ -25,6 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':category' => $category,
             ':safety_stock' => $safety_stock,
             ':current_stock' => $current_stock,
+            ':units' => $units, // Add units to the execution
             ':last_updated' => $last_updated,
         ]);
 
