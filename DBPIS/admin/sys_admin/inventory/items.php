@@ -98,10 +98,11 @@ $categories = $query->fetchAll(PDO::FETCH_COLUMN);
                 </div>
             </div>
         </div>
-
+    
     </div>
     <div id = "itemTable">
           <?php
+              include ("dashboard/modals.php"); 
               include ("dashboard/tables.php");   
             ?>
           </div>

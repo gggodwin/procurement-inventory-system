@@ -6,7 +6,7 @@ if (isset($_GET['prs_code'])) {
     $prs_code = $_GET['prs_code'];
     
     // Fetch purchase requisition details by PRS code
-    $query = "SELECT prs_code, requested_by, department, date_requested, approval_status, total_amount, remarks 
+    $query = "SELECT prs_code, requested_by, department, date_requested, approval_status, remarks 
               FROM dbpis_prs WHERE prs_code = :prs_code";
     $stmt = $db->prepare($query);
     $stmt->bindParam(':prs_code', $prs_code, PDO::PARAM_STR);
@@ -34,8 +34,8 @@ if (isset($_GET['prs_code'])) {
 }
 
 // Fetch all requisitions
-$query = "SELECT prs_code, requested_by, department, date_requested, approval_status, total_amount 
-          FROM dbpis_prs";
+$query = "SELECT prs_code, requested_by, department, date_requested, approval_status 
+          FROM dbpis_prs"; // Removed total_amount from here
 $stmt = $db->prepare($query);
 $stmt->execute();
 $requisitions = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -48,8 +48,8 @@ $countResult = $stmtCount->fetch(PDO::FETCH_ASSOC);
 $totalRequisitions = $countResult['total_requisitions'];
 
 // Fetch all requisitions with pending status
-$queryPending = "SELECT prs_code, requested_by, department, date_requested, approval_status, total_amount 
-                 FROM dbpis_prs WHERE approval_status = 'Pending'";
+$queryPending = "SELECT prs_code, requested_by, department, date_requested, approval_status 
+                 FROM dbpis_prs WHERE approval_status = 'Pending'"; // Removed total_amount from here
 $stmtPending = $db->prepare($queryPending);
 $stmtPending->execute();
 $pendingRequisitions = $stmtPending->fetchAll(PDO::FETCH_ASSOC);
