@@ -12,6 +12,16 @@
     display: none;
 }
 
+        /* Center the canvas horizontally */
+    #barcodeCanvas {
+        display: block; /* Make the canvas a block-level element */
+        margin: 0 auto; /* Center it horizontally */
+        /* Optional: Set a specific width and height for better control */
+        width: 100%; /* Full width of the modal body */
+        max-width: 300px; /* Set a maximum width to prevent it from being too large */
+        height: auto; /* Maintain aspect ratio */
+}
+
 
 </style>
 <div class="row">
@@ -260,25 +270,30 @@ document.getElementById('printButton').addEventListener('click', function() {
 document.getElementById('exportButton').addEventListener('click', function() {
     var csv = [];
     var rows = document.querySelectorAll('#productsTable tr');
-    
+
     for (var i = 0; i < rows.length; i++) {
         var row = [], cols = rows[i].querySelectorAll('td, th');
-        
+
         for (var j = 0; j < cols.length; j++) {
             let cellValue = cols[j].innerText;
 
-            // Check if it's the first column (Barcode ID), prepend tab to treat as text in CSV
+            // For the first column (Barcode ID), just export it as a number without any special formatting
             if (j === 0) {
-                cellValue = '\t' + cellValue; // Prepend a tab for large number handling
+                cellValue = cellValue.replace(/\s+/g, ''); // Remove spaces, leave as a plain number
             }
 
+            // Escape double quotes in all other cells, including Barcode ID if needed
             row.push('"' + cellValue.replace(/"/g, '""') + '"');
         }
-        
+
         csv.push(row.join(','));
     }
 
-    var csvFile = new Blob([csv.join('\n')], { type: 'text/csv' });
+    // Join all rows with newline characters, ensuring the last row is correctly followed by a newline
+    var csvContent = csv.join('\n') + '\n'; // Add a newline to the end
+
+    // Create the CSV file and download link
+    var csvFile = new Blob([csvContent], { type: 'text/csv' });
     var downloadLink = document.createElement('a');
     downloadLink.download = 'products_inventory.csv';
     downloadLink.href = window.URL.createObjectURL(csvFile);
@@ -287,7 +302,6 @@ document.getElementById('exportButton').addEventListener('click', function() {
     downloadLink.click();
     document.body.removeChild(downloadLink);
 });
-
 
 document.getElementById('importButton').addEventListener('click', function () {
     document.getElementById('fileInput').click();
