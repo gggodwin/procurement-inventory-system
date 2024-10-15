@@ -56,7 +56,13 @@
                             <i class="mdi mdi-account"></i>
                             <span class="nav-text">User Profile</span>
                         </a>
-                    </li>       
+                    </li>
+                    <li class="<?php echo ($current_page == 'department') ? 'active' : ''; ?>">
+                        <a class="sidenav-item-link" href="/admin/sys_admin/main_department.php">
+                            <i class="mdi mdi-bank"></i>
+                            <span class="nav-text">Department</span>
+                        </a>
+                    </li>        
                 </ul>
             </div>
 

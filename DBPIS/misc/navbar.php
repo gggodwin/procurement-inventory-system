@@ -7,6 +7,8 @@ if ($page_number == 1) {
   $page_title = "PURCHASE REQUISITION"; // Set title for inventory
 } else if ($page_number == 4) {
   $page_title = "USER PROFILE"; // Set title for inventory
+}else if ($page_number == 5) {
+  $page_title = "DEPARTMENT"; // Set title for inventory
 }
 
 ?>
@@ -30,7 +32,7 @@ if ($page_number == 1) {
                 <li class="dropdown user-menu">
                   <button class="dropdown-toggle nav-link" data-toggle="dropdown">
                     <img src="../../images/user/user-xs-01.jpg" class="user-image rounded-circle"/>
-                    <span class="d-none d-lg-inline-block">John Doe</span>
+                    <span class="d-none d-lg-inline-block"><?php echo $_SESSION['username']; ?></span>
                   </button>
                   <ul class="dropdown-menu dropdown-menu-right">
                     <li>
@@ -58,9 +60,11 @@ if ($page_number == 1) {
                       </a>
                     </li>
 
-                    <li class="dropdown-footer">
-                      <a class="dropdown-link-item" href="../../"> <i class="mdi mdi-logout"></i> Log Out </a>
-                    </li>
+                  <li class="dropdown-footer">
+                    <a class="dropdown-link-item" href="#" id="logoutLink"> <!-- Use an ID for AJAX -->
+                      <i class="mdi mdi-logout"></i> Log Out
+                    </a>
+                  </li>
                   </ul>
                 </li>
               </ul>
@@ -69,3 +73,31 @@ if ($page_number == 1) {
 
 
         </header>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Ensure jQuery is included -->
+
+<script>
+$(document).ready(function() {
+    $('#logoutLink').on('click', function(event) {
+        event.preventDefault(); // Prevent default link behavior
+
+        $.ajax({
+            url: '../../misc/logout.php', // Path to the logout script
+            type: 'POST', // Method type
+            dataType: 'json', // Expect JSON response
+            success: function(response) {
+                if (response.success) {
+                    // Redirect to the login page on successful logout
+                    window.location.href = '../../'; // Change to your login page
+                } else {
+                    // Handle any error responses here
+                    alert('Logout failed, please try again.');
+                }
+            },
+            error: function() {
+                alert('Error occurred while logging out. Please try again.');
+            }
+        });
+    });
+});
+</script>
+

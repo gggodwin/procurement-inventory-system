@@ -74,6 +74,18 @@ if (isset($_GET['barcode'])) {
     exit; // Exit to prevent executing the following code
 }
 
+if (isset($_GET['search'])) {
+    $searchTerm = '%' . $_GET['search'] . '%';
+    $query = "SELECT barcode, particular, brand FROM dbpis_items WHERE particular LIKE :search OR brand LIKE :search LIMIT 10";
+    $stmt = $db->prepare($query);
+    $stmt->bindParam(':search', $searchTerm, PDO::PARAM_STR);
+    $stmt->execute();
+    $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    echo json_encode(['items' => $items]);
+    exit;
+}
+
 // Default query to fetch all item data if no specific request is made
 $query = "SELECT barcode, particular, brand, current_stock, units, safety_stock, category 
           FROM dbpis_items"; // Include units
