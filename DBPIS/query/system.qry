@@ -1,5 +1,4 @@
 <?php 
-
 class SYSTEM {
     
 function get_validateuser($db, $username, $password) {
@@ -7,6 +6,22 @@ function get_validateuser($db, $username, $password) {
     $stmt1 = $db->prepare($query);
     $stmt1->execute(array($username, $password));
     return $stmt1->fetch(PDO::FETCH_ASSOC);
+}
+
+function signupUser($db, $name, $email, $dept, $password) {
+    // Hash the password
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+    
+    // Prepare the SQL statement
+    $stmt = $db->prepare("INSERT INTO dbpis_useraccounts (name, username, password, department) VALUES (?, ?, ?, ?)");
+    
+    // Execute the statement and handle potential errors
+    if ($stmt->execute([$name, $email, $hashedPassword, $dept])) {
+        return "Signup successful!";
+    } else {
+        // Return a more detailed error message
+        return "Error: " . implode(", ", $stmt->errorInfo());
+    }
 }
 
 }
