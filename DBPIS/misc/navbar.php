@@ -9,6 +9,8 @@ if ($page_number == 1) {
   $page_title = "USER PROFILE"; // Set title for inventory
 }else if ($page_number == 5) {
   $page_title = "DEPARTMENT"; // Set title for inventory
+}else if ($page_number == 6) {
+  $page_title = "SUPPLIER"; // Set title for inventory
 }
 
 ?>

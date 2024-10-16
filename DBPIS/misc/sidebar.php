@@ -38,6 +38,13 @@
                             <span class="nav-text">Business Dashboard</span>
                         </a>
                     </li>
+                    <li class="section-title">Forms</li>  
+                    <li class="<?php echo ($current_page == 'purchase') ? 'active' : ''; ?>">
+                        <a class="sidenav-item-link" href="/admin/sys_admin/main_prs.php">
+                            <i class="mdi mdi-clipboard-check-outline"></i>
+                            <span class="nav-text">Purchase Requisition</span>
+                        </a>
+                    </li> 
                     <li class="section-title">Apps</li>
                     <li class="<?php echo ($current_page == 'inventory') ? 'active' : ''; ?>">
                         <a class="sidenav-item-link" href="/admin/sys_admin/main_inventory.php">
@@ -45,24 +52,24 @@
                             <span class="nav-text">Inventory</span>
                         </a>
                     </li>
-                    <li class="<?php echo ($current_page == 'purchase') ? 'active' : ''; ?>">
-                        <a class="sidenav-item-link" href="/admin/sys_admin/main_prs.php">
-                            <i class="mdi mdi-clipboard-check-outline"></i>
-                            <span class="nav-text">Purchase Requisition</span>
-                        </a>
-                    </li>
-                    <li class="<?php echo ($current_page == 'profile') ? 'active' : ''; ?>">
-                        <a class="sidenav-item-link" href="/admin/sys_admin/main_user.php">
-                            <i class="mdi mdi-account"></i>
-                            <span class="nav-text">User Profile</span>
-                        </a>
-                    </li>
                     <li class="<?php echo ($current_page == 'department') ? 'active' : ''; ?>">
                         <a class="sidenav-item-link" href="/admin/sys_admin/main_department.php">
                             <i class="mdi mdi-bank"></i>
                             <span class="nav-text">Department</span>
                         </a>
-                    </li>        
+                    </li> 
+                    <li class="<?php echo ($current_page == 'supplier') ? 'active' : ''; ?>">
+                        <a class="sidenav-item-link" href="/admin/sys_admin/main_supplier.php">
+                            <i class="mdi mdi-cart-outline"></i>
+                            <span class="nav-text">Supplier</span>
+                        </a>
+                    </li> 
+                    <li class="<?php echo ($current_page == 'profile') ? 'active' : ''; ?>">
+                        <a class="sidenav-item-link" href="/admin/sys_admin/main_user.php">
+                            <i class="mdi mdi-account"></i>
+                            <span class="nav-text">User Profile</span>
+                        </a>
+                    </li>    
                 </ul>
             </div>
 

@@ -61,6 +61,8 @@ $stmtCount->execute();
 $countResult = $stmtCount->fetch(PDO::FETCH_ASSOC);
 $totalDepartments = $countResult['total_departments'];
 
+
+
 // Output data as JSON
 echo json_encode([
     'departments' => $departments,

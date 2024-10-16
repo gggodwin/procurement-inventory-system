@@ -3,7 +3,7 @@
 
     
 .modal-custom {
-max-width: 70%; /* You can adjust this percentage */
+max-width: 80%; /* You can adjust this percentage */
 width: 95%; /* Adjust this value as needed */
 }
 
@@ -84,7 +84,9 @@ width: 95%; /* Adjust this value as needed */
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="department">Department</label>
-                                <input type="text" class="form-control" id="department" name="department" required>
+                                <select class="form-control" id="department" name="department" required>
+                                    <option value="">Select a Department</option> <!-- Default option -->
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -112,6 +114,7 @@ width: 95%; /* Adjust this value as needed */
                                 <th>Description</th>
                                 <th>Quantity</th>
                                 <th>Unit Type</th>
+                                <th>Supplier</th>
                                 <th>Unit Price</th>
                                 <th>Total Price</th>
                                 <th>Actions</th>
@@ -199,9 +202,10 @@ $(document).ready(function() {
                 return {
                     results: data.items.map(function(item) {
                         return {
-                            id: item.barcode, // Value to be set when selected
+                            id: `${item.particular} - ${item.brand}`, // Use item description as value
                             text: `${item.particular} - ${item.brand}`, // Displayed text
-                            barcode: item.barcode // Include barcode in the result
+                            barcode: item.barcode // Include barcode in the result if needed for later use
+                        
                         };
                     })
                 };
@@ -224,35 +228,84 @@ $(document).ready(function() {
     });
 }
 
-    // Add a new row
-    $('#addRow').click(function() {
-        var newRow = `
-            <tr>
-                <td><input type="text" name="item_code[]" class="form-control item_code" readonly></td>
-                <td>
-                    <select name="item_description[]" class="form-control item_description" required>
-                        <option value="" disabled selected>Select Item</option>
-                        <!-- Options will be populated via JS -->
-                    </select>
-                </td>
-                <td><input type="number" name="quantity[]" class="form-control quantity" required></td>
-                <td>
-                    <select name="unit_type[]" class="form-control" required>
-                        <option value="pcs">Pieces</option>
-                        <option value="kg">Kilograms</option>
-                        <option value="ltr">Liters</option>
-                        <option value="box">Box</option>
-                    </select>
-                </td>
-                <td><input type="number" step="0.01" name="unit_price[]" class="form-control unit_price" required></td>
-                <td><input type="text" name="total_price[]" class="form-control total_price" readonly></td>
-                <td><button type="button" class="btn btn-danger removeRow">Remove</button></td>
-            </tr>`;
-        $('#prsDetailsContainer').append(newRow);
+function populateSupplierDropdown() {
+    const $supplierDropdown = $('.supplier'); // Get the dropdown
 
-        // Populate the description dropdown in the new row
-        populateDescriptionDropdown();
+    // Clear any existing options
+    $supplierDropdown.empty().append('<option value="" disabled selected>Select Supplier</option>');
+
+    // Populate new options using supplier name as the value
+    suppliers.forEach(function(supplier) {
+        $supplierDropdown.append(new Option(supplier.supplier_name, supplier.supplier_name)); // Use supplier name
     });
+
+    // Reinitialize Select2 for the supplier dropdown
+    $supplierDropdown.select2({
+        placeholder: "Select Supplier",
+        allowClear: true,
+        width: '240px', // Set a fixed width for the dropdown
+        dropdownParent: $('#insertPRModal .modal-content')
+    });
+
+    console.log('Supplier dropdown populated:', suppliers); // Debugging
+}
+
+
+$.ajax({
+    url: 'fetch/fetch_supp.php', // Correct path to fetch suppliers
+    method: 'GET',
+    dataType: 'json',
+    success: function(data) {
+        console.log('Suppliers fetched successfully:', data); // Debugging
+        suppliers = data.suppliers; // Store fetched suppliers
+        populateSupplierDropdown(); // Populate supplier dropdown
+    }
+});
+
+    // Add a new row
+$('#addRow').click(function() {
+    var newRow = `
+        <tr>
+            <td><input type="text" name="item_code[]" class="form-control item_code" readonly></td>
+            <td>
+                <select name="item_description[]" class="form-control item_description" required>
+                    <option value="" disabled selected>Select Item</option>
+                    <!-- Options will be populated via JS -->
+                </select>
+            </td>
+            <td><input type="number" name="quantity[]" class="form-control quantity" required></td>
+            <td>
+                <select name="unit_type[]" class="form-control" required>
+                    <option value="pcs">Pieces</option>
+                    <option value="kg">Kilograms</option>
+                    <option value="ltr">Liters</option>
+                    <option value="box">Box</option>
+                </select>
+            </td>
+            <td>
+                <select name="supplier[]" class="form-control supplier" required>
+                    <option value="" disabled selected>Select Supplier</option>
+                    <!-- Options will be populated via JS -->
+                </select>
+            </td>
+            <td><input type="number" step="0.01" name="unit_price[]" class="form-control unit_price" required></td>
+            <td><input type="text" name="total_price[]" class="form-control total_price" readonly></td>
+            <td><button type="button" class="btn btn-danger removeRow">Remove</button></td>
+        </tr>`;
+    
+    $('#prsDetailsContainer').append(newRow);
+
+    // Scroll to the newly added row
+    var container = $('#prsDetailsContainer');
+    var newRowElement = container.find('tr').last();
+    $('#insertPRModal, .modal-body').animate({
+        scrollTop: newRowElement.offset().top
+    }, 800); // Adjust the scroll speed as necessary (800ms)
+
+    // Populate the description dropdown in the new row
+    populateDescriptionDropdown();
+    populateSupplierDropdown();
+});
 
     // Remove a row
     $(document).on('click', '.removeRow', function() {
@@ -294,30 +347,37 @@ $(document).ready(function() {
 
     // Function to add the initial row back
     function addInitialRow() {
-        var initialRow = `
-            <tr>
-                <td><input type="text" name="item_code[]" class="form-control item_code" readonly></td>
-                <td>
-                    <select name="item_description[]" class="form-control item_description" required>
-                        <option value="" disabled selected>Select Item</option>
-                        <!-- Options will be populated via JS -->
-                    </select>
-                </td>
-                <td><input type="number" name="quantity[]" class="form-control quantity" required></td>
-                <td>
-                    <select name="unit_type[]" class="form-control" required>
-                        <option value="pcs">Pieces</option>
-                        <option value="kg">Kilograms</option>
-                        <option value="ltr">Liters</option>
-                        <option value="box">Box</option>
-                    </select>
-                </td>
-                <td><input type="number" step="0.01" name="unit_price[]" class="form-control unit_price" required></td>
-                <td><input type="text" name="total_price[]" class="form-control total_price" readonly></td>
-                <td><button type="button" class="btn btn-danger removeRow">Remove</button></td>
-            </tr>`;
-        $('#prsDetailsContainer').append(initialRow);
-    }
+    var initialRow = `
+        <tr>
+            <td><input type="text" name="item_code[]" class="form-control item_code" readonly></td>
+            <td>
+                <select name="item_description[]" class="form-control item_description" required>
+                    <option value="" disabled selected>Select Item</option>
+                    <!-- Options will be populated via JS -->
+                </select>
+            </td>
+            <td><input type="number" name="quantity[]" class="form-control quantity" required></td>
+            <td>
+                <select name="unit_type[]" class="form-control" required>
+                    <option value="pcs">Pieces</option>
+                    <option value="kg">Kilograms</option>
+                    <option value="ltr">Liters</option>
+                    <option value="box">Box</option>
+                </select>
+            </td>
+            <td>
+                <select name="supplier[]" class="form-control supplier" required>
+                    <option value="" disabled selected>Select Supplier</option>
+                    <!-- Options will be populated via JS -->
+                </select>
+            </td>
+            <td><input type="number" step="0.01" name="unit_price[]" class="form-control unit_price" required></td>
+            <td><input type="text" name="total_price[]" class="form-control total_price" readonly></td>
+            <td><button type="button" class="btn btn-danger removeRow">Remove</button></td>
+        </tr>`;
+    $('#prsDetailsContainer').append(initialRow);
+
+}
 
     // Handle form submission
     $('#prsForm').submit(function(event) {
@@ -346,7 +406,45 @@ $(document).ready(function() {
     });
 
     resetForm();
+
+    function fetchDepartments() {
+        console.log('Fetching departments...'); // Debugging: Start of the fetch process
+        $.ajax({
+            url: 'fetch/fetch_dept.php', // Adjust the path to your department fetch script
+            type: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                console.log('Response received:', response); // Debugging: Log the response
+                if (response.departments) {
+                    const departmentSelect = $('#department');
+                    departmentSelect.empty(); // Clear existing options
+                    departmentSelect.append('<option value="">Select a Department</option>'); // Default option
+
+                    response.departments.forEach(department => {
+                        departmentSelect.append(
+                            `<option value="${department.dept_id}">${department.dept_name}</option>`
+                        ); // Add each department to the dropdown
+                    });
+                } else {
+                    console.error('No departments found in the response.');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching departments:', error);
+                console.log('XHR:', xhr); // Log the XHR object for more details
+                console.log('Status:', status); // Log the status
+            }
+        });
+    }
+
+    // Call fetchDepartments when the modal is opened
+    $('#insertPRModal').on('show.bs.modal', function() {
+        fetchDepartments(); // Fetch and populate departments when the modal is opened
+    });
+    
 });
+
+
 
 
 

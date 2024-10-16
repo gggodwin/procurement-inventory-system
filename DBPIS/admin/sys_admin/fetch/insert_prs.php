@@ -32,10 +32,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $quantities = $_POST['quantity'];
         $unit_prices = $_POST['unit_price'];
         $unit_types = $_POST['unit_type'];
+        $suppliers = $_POST['supplier']; // Get the supplier field from the form
 
         // Prepare insert query for dbpis_prsdetails
-        $sqlDetails = "INSERT INTO dbpis_prsdetails (prs_code, item_code, item_description, quantity, unit_price, total_price, requested_date, unit_type) 
-                       VALUES (:prs_code, :item_code, :item_description, :quantity, :unit_price, :total_price, :requested_date, :unit_type)";
+        $sqlDetails = "INSERT INTO dbpis_prsdetails (prs_code, item_code, item_description, quantity, unit_price, total_price, requested_date, unit_type, supplier) 
+                       VALUES (:prs_code, :item_code, :item_description, :quantity, :unit_price, :total_price, :requested_date, :unit_type, :supplier)";
         
         // Loop through the items and insert them into dbpis_prsdetails
         for ($i = 0; $i < count($item_codes); $i++) {
@@ -50,11 +51,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ':unit_price' => $unit_prices[$i],
                 ':total_price' => $total_price,
                 ':requested_date' => $date_requested,
-                ':unit_type' => $unit_types[$i]
+                ':unit_type' => $unit_types[$i],
+                ':supplier' => $suppliers[$i] // Add supplier to the execution array
             ]);
 
             // Debugging: output the inserted values
-            error_log("Inserted item: PR Code: $prs_code, Item Code: {$item_codes[$i]}, Quantity: {$quantities[$i]}, Unit Price: {$unit_prices[$i]}, Total Price: $total_price");
+            error_log("Inserted item: PR Code: $prs_code, Item Code: {$item_codes[$i]}, Quantity: {$quantities[$i]}, Unit Price: {$unit_prices[$i]}, Total Price: $total_price, Supplier: {$suppliers[$i]}");
         }
 
         echo json_encode(['success' => true, 'message' => 'Purchase Requisition inserted successfully']);
