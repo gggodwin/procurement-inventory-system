@@ -33,10 +33,9 @@
                       <a class="text-color" href="#"> Forgot password? </a>
                     </div>
                     <button type="submit" class="btn btn-primary btn-pill mb-4">Sign In</button>
-                    <!-- 
                     <p>Don't have an account yet?
-                      <a href="signup.php" id="signupBtn">Sign Up</a>
-                    </p>-->
+                      <a href="admin/signup.php" id="signupBtn">Sign Up</a>
+                    </p>
                   </div>
                 </div>
               </form>
