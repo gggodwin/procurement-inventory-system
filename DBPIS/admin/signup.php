@@ -4,20 +4,33 @@ include ("../core/dbsys.ini");
 include_once ("../query/system.qry");
 
 $sys = new SYSTEM();
+$show_toast = ''; // Variable to hold toast message
 
 if(isset($_POST['submit'])){
     // Collect user input from the form
     $name = $_POST['username'];
     $email = $_POST['email'];
     $password = $_POST['password'];
+    $confirm_password = $_POST['cpassword'];
     $dept = $_POST['dept'];
 
-    // Call the signup function
-    $response = $sys->signupUser($db, $name, $email, $dept, $password);
-    // You may want to handle the response (e.g., show a message)
-    echo "<script>alert('$response');</script>"; // For demonstration, use alert to show response
+    // Check if password and confirm password match
+    if ($password !== $confirm_password) {
+        $show_toast = "Passwords do not match. Please try again."; // Set toast message
+    } else {
+        // Call the signup function
+        $response = $sys->signupUser($db, $name, $email, $dept, $password);
+        
+        // Check if the response indicates success
+        if ($response === 'Signup successful') {
+            // Redirect to the login page
+            header("Location: login.php");
+            exit(); // Ensure no further code is executed after redirect
+        } else {
+            $show_toast = $response; // Set the toast message if signup fails
+        }
+    }
 }
-
 ?>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -36,7 +49,7 @@ if(isset($_POST['submit'])){
                     <div class="card card-default mb-0">
                         <div class="card-header pb-0">
                             <div class="app-brand w-100 d-flex justify-content-center border-bottom-0">
-                                <a class="w-auto pl-0" href="/index.html">
+                                <a class="w-auto pl-0" href="login.php">
                                     <img src="../images/logo3.png" alt="Mono">
                                     <span class="brand-name text-dark"></span>
                                 </a>
@@ -77,5 +90,34 @@ if(isset($_POST['submit'])){
     </div>
 
     <div id="toast"></div> <!-- Toast for messages -->
+
+    <script>
+    $(document).ready(function() {
+        // Function to display the toast message
+        function showToast(message) {
+            var toast = document.createElement('div');
+            toast.className = 'custom-toast';
+            toast.innerText = message;
+            
+            document.body.appendChild(toast);
+
+            setTimeout(function() {
+                toast.classList.add('visible');
+            }, 100); // Slight delay to allow transition
+
+            setTimeout(function() {
+                toast.classList.remove('visible');
+                setTimeout(function() {
+                    document.body.removeChild(toast);
+                }, 300); // Delay to remove the element after the fade-out
+            }, 3000); // Display for 3 seconds
+        }
+
+        // Display toast if there's a message to show
+        <?php if ($show_toast): ?>
+            showToast("<?php echo $show_toast; ?>");
+        <?php endif; ?>
+    });
+    </script>
 
 </body>

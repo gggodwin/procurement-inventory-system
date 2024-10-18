@@ -1,10 +1,10 @@
 <?php 
 class SYSTEM {
     
-function get_validateuser($db, $username, $password) {
-    $query = "SELECT * FROM dbpis_useraccounts WHERE username = ? AND password = ?";
+function get_validateuser($db, $username) {
+    $query = "SELECT * FROM dbpis_useraccounts WHERE username = ?";
     $stmt1 = $db->prepare($query);
-    $stmt1->execute(array($username, $password));
+    $stmt1->execute(array($username));
     return $stmt1->fetch(PDO::FETCH_ASSOC);
 }
 

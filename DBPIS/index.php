@@ -9,17 +9,30 @@ $system = new SYSTEM();
 $invalid_login = false; // Initialize the flag for invalid login
 if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_POST['username']) && !empty($_POST['password'])) {
     // Assuming get_validateuser returns the user data if valid or false if not
-    $user_data = $system->get_validateuser($db, $_POST["username"], $_POST["password"]);
+    $user_data = $system->get_validateuser($db, $_POST["username"]);
 
     if ($user_data) {
-        // Assuming $user_data is an array with 'name' and 'username'
-        $_SESSION['name'] = $user_data['name'];      // Store the user's name in the session
-        $_SESSION['username'] = $user_data['username']; // Store the username in the session
+        //get the hashed password from the data base
+        $hashed_password = $user_data['password'];
+        $input_password = trim($_POST['password']);
+        
+        if(password_verify($input_password,$hashed_password)){
+            // Assuming $user_data is an array with 'name' and 'username'
+            $_SESSION['name'] = $user_data['name'];      // Store the user's name in the session
+            $_SESSION['username'] = $user_data['username']; // Store the username in the session
 
-        // Redirect to the dashboard or wherever the user should go after logging in
-        header("Location: admin/sys_admin/index.php");
-        exit(); // Ensure no further code execution after redirect
-    } else {
+            // Redirect to the dashboard or wherever the user should go after logging in
+            header("Location: admin/sys_admin/index.php");
+            exit(); // Ensure no further code execution after redirect
+    }
+
+        else {
+            $invalid_login = true; // Set the flag to true if login fails
+        }
+
+    } 
+    
+    else {
         $invalid_login = true; // Set the flag to true if login fails
     }
 }
