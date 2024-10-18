@@ -1,106 +1,198 @@
+<?php
+// Connect to your database (assumed using PDO)
+require '../../../core/dbsys.ini'; // Adjust the path as needed
 
-        <div class="invoice-wrapper rounded border bg-white py-5 px-3 px-md-4 px-lg-5 mb-6">
-            <div class="d-flex justify-content-between">
-                <h2 class="text-dark font-weight-medium">Purchase Requisition #PR001</h2>
-                <div class="btn-group">
-                    <button class="btn btn-sm btn-light">
-                        <i class="mdi mdi-content-save"></i> Save</button>
-                    <button class="btn btn-sm btn-secondary">
-                        <i class="mdi mdi-printer"></i> Print</button>
-                </div>
-            </div>
-            <div class="row pt-5">
-                <div class="col-xl-3 col-lg-4">
-                    <p class="text-dark mb-2">Requested By</p>
-                    <address>
-                        Employee Name
-                        <br> Department: IT
-                        <br> Email: example@gmail.com
-                        <br> Phone: +91 5264 251 325
-                    </address>
-                </div>
-                <div class="col-xl-3 col-lg-4">
-                    <p class="text-dark mb-2">Approved By</p>
-                    <address>
-                        Approver Name
-                        <br> Department: Management
-                        <br> Email: approver@example.com
-                        <br> Phone: +91 5264 521 943
-                    </address>
-                </div>
-                <div class="col-xl-3 col-lg-4">
-                    <p class="text-dark mb-2">Details</p>
-                    <address>
-                        PR ID:
-                        <span class="text-dark">#PR001</span>
-                        <br> Date: March 25, 2024
-                        <br> Status: Pending
-                    </address>
-                </div>
-            </div>
-            <div class="table-responsive">
-                <table class="table mt-3 table-striped" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Item</th>
-                            <th>Description</th>
-                            <th>Quantity</th>
-                            <th>Unit Cost</th>
-                            <th>Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Platinum Support</td>
-                            <td>1 year subscription 24/7</td>
-                            <td>1</td>
-                            <td>₱3,999.00</td>
-                            <td>₱3,999.00</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Custom Services</td>
-                            <td>Installation and Customization (cost per hour)</td>
-                            <td>10</td>
-                            <td>₱250.00</td>
-                            <td>₱2,500.00</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>Origin License</td>
-                            <td>Extended License</td>
-                            <td>1</td>
-                            <td>₱799.00</td>
-                            <td>₱799.00</td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td>Hosting</td>
-                            <td>1 year subscription</td>
-                            <td>1</td>
-                            <td>₱599.00</td>
-                            <td>₱599.00</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="row justify-content-end">
-                <div class="col-lg-5 col-xl-4 col-xl-3 ml-sm-auto">
-                    <ul class="list-unstyled mt-4">
-                        <li class="mid pb-3 text-dark"> Subtotal
-                            <span class="d-inline-block float-right text-default">$7,897.00</span>
-                        </li>
-                        <li class="mid pb-3 text-dark">VAT (10%)
-                            <span class="d-inline-block float-right text-default">$789.70</span>
-                        </li>
-                        <li class="pb-3 text-dark">Total
-                            <span class="d-inline-block float-right">$8,686.70</span>
-                        </li>
-                    </ul>
-                    <a href="#" class="btn btn-block mt-2 btn-lg btn-primary btn-pill"> Proceed to Approval</a>
-                </div>
-            </div>
+// Fetch PR data based on the passed `prs_code`
+if (isset($_GET['prs_code'])) {
+    $prs_code = $_GET['prs_code'];
+
+    // Fetch PR details from the `dbpis_prs` table
+    $stmt = $db->prepare("SELECT * FROM dbpis_prs WHERE prs_code = :prs_code");
+    $stmt->bindParam(':prs_code', $prs_code);
+    $stmt->execute();
+    $prsData = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    // Fetch PR items from the `dbpis_prsdetails` table
+    $stmtItems = $db->prepare("SELECT * FROM dbpis_prsdetails WHERE prs_code = :prs_code");
+    $stmtItems->bindParam(':prs_code', $prs_code);
+    $stmtItems->execute();
+    $prsItems = $stmtItems->fetchAll(PDO::FETCH_ASSOC);
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purchase Requisition Slip</title>
+    <style>
+
+.prs-header span, .prs-footer span, span {
+    font-weight: bold; /* Highlight spans */
+}
+
+.prs-slip {
+    width: 100%;
+    padding: 20px; /* Increase padding for better spacing */
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+.prs-slip h1 {
+    text-align: center;
+    font-size: 24px; /* Increase font size for the title */
+}
+
+.prs-header, .prs-footer {
+    display: flex;
+    justify-content: space-between;
+    font-size: 16px; /* Increase font size */
+    margin-bottom: 10px; /* Add spacing between sections */
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+}
+
+.prs-header div, .prs-footer div {
+    margin-bottom: 10px; /* Add margin between fields */
+}
+
+.prs-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    font-size: 14px; /* Increase font size for table */
+}
+
+.prs-table th, .prs-table td {
+    border: 1px solid black;
+    padding: 10px; /* Increase padding for table cells */
+    text-align: center;
+}
+
+.prs-footer {
+    margin-top: 15px; /* Add space between table and footer */
+    font-size: 16px; /* Increase font size for footer */
+}
+
+.prs-footer div {
+    width: 20%;
+    margin-bottom: 10px; /* Add margin for each footer field */
+}
+
+.status-approved {
+    color: green; /* Green for approved */
+    font-weight: bold; /* Make the text bold */
+}
+
+.status-pending {
+    color: orange; /* Orange for pending */
+    font-weight: bold; /* Make the text bold */
+}
+
+.status-rejected {
+    color: red; /* Red for rejected */
+    font-weight: bold; /* Make the text bold */
+}
+
+.status-default {
+    color: gray; /* Gray for default/unknown statuses */
+    font-weight: bold; /* Make the text bold */
+}
+    </style>
+</head>
+<body>
+    <div class="prs-slip">
+        <h1>PURCHASE REQUISITION SLIP</h1>
+        
+        <div class="prs-header">
+            <div>Requesting Department: <span id="department"><?php echo $prsData['department']; ?></span></div>
+            <div>PRS No: <span id="prsNo"><?php echo $prsData['prs_code']; ?></span></div>
         </div>
+        
+        <div class="prs-header">
+            <div>Date Prepared: <span id="datePrepared"><?php echo $prsData['date_requested']; ?></span></div>
+            <div>Date Needed: <span id="dateNeeded"><?php echo $prsData['date_needed']; ?></span></div>
+        </div>
+        
+        <div>Purpose: <span id="purpose"><?php echo $prsData['remarks']; ?></span></div>
+        
+        <table class="prs-table">
+    <thead>
+        <tr>
+            <th>ITEM NO.</th>
+            <th>PARTICULARS</th>
+            <th>QUANTITY</th>
+            <th>UNIT</th>
+            <th>SUPPLIER</th>
+            <th>UNIT PRICE</th>
+            <th>TOTAL PRICE</th>
+        </tr>
+    </thead>
+    <tbody id="prsItems">
+    <?php 
+    // Assuming $prsItems is an array of items
+    $numItems = count($prsItems);
+    $maxRows = 5;
+    $grandTotal = 0; // Initialize grand total
 
+    // Fill the table with actual items
+    foreach ($prsItems as $index => $item): 
+        $grandTotal += $item['total_price']; // Add to grand total
+    ?>
+        <tr>
+            <td><?php echo $item['item_code']; ?></td>
+            <td><?php echo $item['item_description']; ?></td>
+            <td><?php echo $item['quantity']; ?></td>
+            <td><?php echo $item['unit_type']; ?></td>
+            <td><?php echo $item['supplier']; ?></td>
+            <td>₱<?php echo number_format($item['unit_price'], 2); ?></td>
+            <td>₱<?php echo number_format($item['total_price'], 2); ?></td>
+        </tr>
+    <?php endforeach; ?>
+
+    <!-- Fill remaining rows if less than 5 -->
+    <?php for ($i = $numItems; $i < $maxRows; $i++): ?>
+        <tr>
+            <td>&nbsp;</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    <?php endfor; ?>
+
+    <!-- Display grand total row -->
+    <tr>
+        <td colspan="6" style="text-align: right; font-weight: bold;">Grand Total:</td>
+        <td colspan="2" style="font-weight: bold;">₱<?php echo number_format($grandTotal, 2); ?></td>
+    </tr>
+</tbody>
+
+</table>
+        
+        <div class="prs-footer">
+            <div>Prepared by: <span id="preparedBy"><?php echo $prsData['requested_by']; ?></span></div>
+            <div>Status: <span id="preparedBy" class="<?php echo getStatusClass($prsData['approval_status']); ?>"><?php echo $prsData['approval_status']; ?></span></div>
+            <?php
+            function getStatusClass($status) {
+                switch ($status) {
+                    case 'Approved':
+                        return 'status-approved';
+                    case 'Pending':
+                        return 'status-pending';
+                    case 'Rejected':
+                        return 'status-rejected';
+                    default:
+                        return 'status-default';
+                }
+            }
+                ?>
+            <div>Approved by: <span id="approvedBy"><?php echo !empty($prsData['approved_by']) ? $prsData['approved_by'] : 'Awaiting Approval'; ?></span></div>
+
+            
+        </div>
+    </div>
+</body>
+</html>

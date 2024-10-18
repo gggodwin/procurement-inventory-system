@@ -7,6 +7,12 @@ max-width: 80%; /* You can adjust this percentage */
 width: 95%; /* Adjust this value as needed */
 }
 
+.modal-invoice {
+max-width: 70%; /* You can adjust this percentage */
+width: 100%; /* Adjust this value as needed */
+}
+
+
         /* Set the height and width of the Select2 selection box */
 .select2-container--default .select2-selection--single {
     width: 100%; /* Make the dropdown span full width */
@@ -69,8 +75,9 @@ width: 95%; /* Adjust this value as needed */
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="prs_code">PR Code</label>
-                                <input type="text" class="form-control" id="prs_code" name="prs_code" required>
+                                <input type="text" class="form-control" id="prs_code" name="prs_code" required readonly>
                             </div>
+
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
@@ -95,9 +102,12 @@ width: 95%; /* Adjust this value as needed */
                                 <input type="date" class="form-control" id="date_requested" name="date_requested" required>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="date_needed">Date needed</label>
+                                <input type="date" class="form-control" id="date_needed" name="date_needed" required>
+                            </div>
+                        </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="remarks">Remarks</label>
@@ -165,8 +175,132 @@ width: 95%; /* Adjust this value as needed */
     </div>
 </div>
 
+<div class="modal fade" id="viewDetailsModal" tabindex="-1" aria-labelledby="viewDetailsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-invoice">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="viewDetailsModalLabel">Purchase Requisition Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <iframe id="prsDetailsFrame" style="width:100%; height:600px;" frameborder="0"></iframe>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" onclick="printContent()">Print</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="updateRequisitionModal" tabindex="-1" role="dialog" aria-labelledby="updateRequisitionLabel" aria-hidden="true">
+    <div class="modal-dialog modal-custom" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateRequisitionLabel">Update Purchase Requisition</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="updatePrsForm" method="POST">
+                    <!-- dbpis_prs fields (vertical columns layout) -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="updatePrsCode">PR Code</label>
+                                <input type="text" class="form-control" id="updatePrsCode" name="prs_code" required readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="updateRequestedBy">Requested By</label>
+                                <input type="text" class="form-control" id="updateRequestedBy" name="requested_by" value="<?php echo $_SESSION['name']; ?>" readonly required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="updateDepartment">Department</label>
+                                    <select class="form-control" id="updateDepartment" name="department" required>
+                                        <option value="">Select new Department</option> <!-- Default option -->
+                                        <?php foreach ($departments as $department): ?>
+                                            <option value="<?php echo $department['dept_name']; ?>"><?php echo $department['dept_name']; ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="updateDateRequested">Date Requested</label>
+                                <input type="date" class="form-control" id="updateDateRequested" name="date_requested" required readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="updateDateNeeded">Date Needed</label>
+                                <input type="date" class="form-control" id="updateDateNeeded" name="date_needed" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="updateRemarks">Remarks</label>
+                                <textarea class="form-control" id="updateRemarks" name="remarks" rows="3"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h5>PR Items</h5>
+                    <table class="table table-hover table-product" id="updatePrsDetailsTable">
+                        <thead>
+                            <tr>
+                                <th>Item Code</th>
+                                <th>Description</th>
+                                <th>Quantity</th>
+                                <th>Unit Type</th>
+                                <th>Supplier</th>
+                                <th>Unit Price</th>
+                                <th>Total Price</th>
+                                <!--<th>Actions</th>-->
+                            </tr>
+                        </thead>
+                        <tbody id="updatePrsDetailsContainer">
+                            <!-- Existing rows will be populated dynamically -->
+                        </tbody>
+                    </table>
+                    <div class="row mb-3">
+                        <div class="col-md-8">
+                            <!--<button type="button" class="btn btn-success" id="updateAddRow">Add Row</button>-->
+                        </div>
+                        <div class="col-md-3 text-right">
+                            <!--<h5>Grand Total: <span id="updateGrandTotal">0.00</span></h5>-->
+                        </div>
+                    </div>
+
+                    <!-- Submit button -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" onclick="updateRequisition()">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
 <script>
+    function printContent() {
+    const iframe = document.getElementById('prsDetailsFrame');
+    if (iframe) {
+        iframe.contentWindow.print();
+    } else {
+        console.error("Iframe not found");
+    }
+}
     
 $(document).ready(function() {
     let items = []; // To store fetched items
@@ -228,27 +362,63 @@ $(document).ready(function() {
     });
 }
 
+
 function populateSupplierDropdown() {
-    const $supplierDropdown = $('.supplier'); // Get the dropdown
-
-    // Clear any existing options
-    $supplierDropdown.empty().append('<option value="" disabled selected>Select Supplier</option>');
-
-    // Populate new options using supplier name as the value
-    suppliers.forEach(function(supplier) {
-        $supplierDropdown.append(new Option(supplier.supplier_name, supplier.supplier_name)); // Use supplier name
-    });
-
-    // Reinitialize Select2 for the supplier dropdown
-    $supplierDropdown.select2({
-        placeholder: "Select Supplier",
+    // Initialize Select2 for the supplier dropdown
+    $('.supplier').select2({
+        placeholder: "Select Supplier", 
         allowClear: true,
         width: '240px', // Set a fixed width for the dropdown
-        dropdownParent: $('#insertPRModal .modal-content')
+        dropdownParent: $('#insertPRModal .modal-content'),
+        ajax: {
+            url: 'fetch/fetch_supp.php', // Your backend URL to handle the supplier search
+            dataType: 'json',
+            delay: 250, // Delay to avoid overwhelming the server with requests
+            data: function (params) {
+                return {
+                    search: params.term // Search term sent to server
+                };
+            },
+            processResults: function (data) {
+                return {
+                    results: data.suppliers.map(function(supplier) {
+                        return {
+                            id: supplier.supplier_name, // Use supplier name as value
+                            text: supplier.supplier_name, // Displayed text
+                            contact_email: supplier.contact_email, // Include other details if needed
+                            contact_phone: supplier.contact_phone // Include phone for further use if necessary
+                        };
+                    })
+                };
+            },
+            cache: true
+        }
     });
 
-    console.log('Supplier dropdown populated:', suppliers); // Debugging
+    // Reinitialize the date input for 'date_requested' when the modal is shown
+    $('#insertPRModal').on('shown.bs.modal', function () {
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('date_requested').value = today;
+    });
+
+    // If needed, handle additional logic when a supplier is selected
+    $('.supplier').on('select2:select', function(e) {
+        // Get the selected supplier's data
+        let selectedSupplier = e.params.data;
+        let selectedEmail = selectedSupplier.contact_email; // Retrieve email (or other data) if needed
+        let selectedPhone = selectedSupplier.contact_phone; // Retrieve phone if needed
+        
+        // You can now populate other fields in the form using the selected supplier data
+        console.log(`Selected Supplier: ${selectedSupplier.text}, Email: ${selectedEmail}, Phone: ${selectedPhone}`);
+        
+        // Optionally populate other fields if necessary
+        // Example:
+        // $(this).closest('tr').find('.supplier_email').val(selectedEmail);
+    });
+
+
 }
+
 
 
 $.ajax({
@@ -256,7 +426,6 @@ $.ajax({
     method: 'GET',
     dataType: 'json',
     success: function(data) {
-        console.log('Suppliers fetched successfully:', data); // Debugging
         suppliers = data.suppliers; // Store fetched suppliers
         populateSupplierDropdown(); // Populate supplier dropdown
     }
@@ -394,6 +563,7 @@ $('#addRow').click(function() {
                     $('#insertPRModal').modal('hide');
                     resetForm(); // Reset the form using the reset function
                     fetchRequisitionData(); // Fetch updated data if necessary
+                    fetchPurchaseRequisitionDetails();
                 } else {
                     alert('Error: ' + response.message);
                 }
@@ -422,7 +592,7 @@ $('#addRow').click(function() {
 
                     response.departments.forEach(department => {
                         departmentSelect.append(
-                            `<option value="${department.dept_id}">${department.dept_name}</option>`
+                            `<option value="${department.dept_name}">${department.dept_name}</option>`
                         ); // Add each department to the dropdown
                     });
                 } else {
@@ -442,6 +612,61 @@ $('#addRow').click(function() {
         fetchDepartments(); // Fetch and populate departments when the modal is opened
     });
     
+            // Fetch and set the new PR Code and Barcode when the modal is opened
+        $('#insertPRModal').on('show.bs.modal', function() {
+            $.ajax({
+                url: 'fetch/fetch_latest_id.php', // Adjust the path as needed
+                type: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    console.log('New IDs fetched:', response); // Debugging: Log the response
+                    if (response.latest_pr_code) {
+                        $('#prs_code').val(response.latest_pr_code); // Set the PR Code in the input field
+                    } else {
+                        console.error('No PR Code returned from server.');
+                    }
+                    if (response.latest_barcode) {
+                        $('#barcode').val(response.latest_barcode); // Set the Barcode in the input field
+                    } else {
+                        console.error('No Barcode returned from server.');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching new IDs:', error);
+                }
+            });
+        });
+
+        function updateRequisition() {
+    // Create a FormData object to hold form data
+    const formData = new FormData(document.getElementById('updatePrsForm'));
+
+    // Send the data via fetch to the server
+    fetch('fetch/update_prs.php', {
+        method: 'POST',
+        body: formData,
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Success: Notify the user and refresh the data
+            alert(data.message); // You might want to use a better UI for notifications
+            $('#updateRequisitionModal').modal('hide'); // Hide the modal
+            
+            // Optionally refresh the requisitions table here
+            fetchPurchaseRequisitionDetails(); // Call your existing function to refresh data
+        } else {
+            // Error: Notify the user
+            alert(data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error updating requisition:', error);
+        alert('An error occurred while updating the requisition.');
+    });
+}
+
+
 });
 
 

@@ -30,7 +30,7 @@ $suppliers = $stmt->fetchAll(PDO::FETCH_ASSOC)
                         </ul>
                         <div class="tab-content mt-5" id="nav-tabContent">
                             <div class="tab-pane fade show active" id="nav-tabs-home2" role="tabpanel" aria-labelledby="nav-home-tab">
-                                <?php include ("prs/prs_tables.php") ?>
+                                <?php include ("prs/prs_approval.php") ?>
                             </div>
                             <div class="tab-pane fade" id="nav-profile2" role="tabpanel" aria-labelledby="nav-profile-tab">
                                 <?php include ("prs/prs_details.php") ?>

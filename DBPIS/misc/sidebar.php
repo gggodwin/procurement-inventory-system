@@ -44,7 +44,14 @@
                             <i class="mdi mdi-clipboard-check-outline"></i>
                             <span class="nav-text">Purchase Requisition</span>
                         </a>
-                    </li> 
+                    </li>
+                    <li class="section-title">Admin</li>  
+                    <li class="<?php echo ($current_page == 'purchase_approval') ? 'active' : ''; ?>">
+                        <a class="sidenav-item-link" href="/admin/sys_admin/main_prs_approval.php">
+                            <i class="mdi mdi-clipboard-account"></i>
+                            <span class="nav-text">PRS Approval</span>
+                        </a>
+                    </li>  
                     <li class="section-title">Apps</li>
                     <li class="<?php echo ($current_page == 'inventory') ? 'active' : ''; ?>">
                         <a class="sidenav-item-link" href="/admin/sys_admin/main_inventory.php">
@@ -64,27 +71,53 @@
                             <span class="nav-text">Supplier</span>
                         </a>
                     </li> 
+                    <!--
                     <li class="<?php echo ($current_page == 'profile') ? 'active' : ''; ?>">
                         <a class="sidenav-item-link" href="/admin/sys_admin/main_user.php">
                             <i class="mdi mdi-account"></i>
                             <span class="nav-text">User Profile</span>
                         </a>
-                    </li>    
+                    </li> -->   
                 </ul>
             </div>
 
             <div class="sidebar-footer">
               <div class="sidebar-footer-content">
                 <ul class="d-flex">
-                  <!--
+                  
                   <li>
-                    <a href="user-account-settings.html" data-toggle="tooltip" title="Profile settings"><i class="mdi mdi-settings"></i></a></li>
-                  <li>
-                    <a href="#" data-toggle="tooltip" title="No chat messages"><i class="mdi mdi-chat-processing"></i></a>
--->
+                    <a data-toggle="tooltip" title="Logout" id="logoutLink"><i class="mdi mdi-logout"></i></a>
                   </li>
+
                 </ul>
               </div>
             </div>
           </div>
         </aside>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+
+  $(document).ready(function() {
+    $('#logoutLink').on('click', function(event) {
+        event.preventDefault(); // Prevent default link behavior
+
+        $.ajax({
+            url: '../../misc/logout.php', // Path to the logout script
+            type: 'POST', // Method type
+            dataType: 'json', // Expect JSON response
+            success: function(response) {
+                if (response.success) {
+                    // Redirect to the login page on successful logout
+                    window.location.href = '../../'; // Change to your login page
+                } else {
+                    // Handle any error responses here
+                    alert('Logout failed, please try again.');
+                }
+            },
+            error: function() {
+                alert('Error occurred while logging out. Please try again.');
+            }
+        });
+    });
+  });
+        </script>

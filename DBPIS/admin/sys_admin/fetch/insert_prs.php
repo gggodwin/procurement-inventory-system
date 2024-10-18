@@ -8,11 +8,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $requested_by = $_POST['requested_by'];
         $department = $_POST['department'];
         $date_requested = $_POST['date_requested'];
+        $date_needed = $_POST['date_needed']; // Retrieve the new field
         $remarks = $_POST['remarks'];
 
         // Prepare to insert into dbpis_prs
-        $sqlPrs = "INSERT INTO dbpis_prs (prs_code, requested_by, department, date_requested, approval_status, remarks) 
-                   VALUES (:prs_code, :requested_by, :department, :date_requested, 'Pending', :remarks)";
+        $sqlPrs = "INSERT INTO dbpis_prs (prs_code, requested_by, department, date_requested, approval_status, remarks, date_needed) 
+                   VALUES (:prs_code, :requested_by, :department, :date_requested, 'Pending', :remarks, :date_needed)";
         
         $stmtPrs = $db->prepare($sqlPrs);
         $stmtPrs->execute([
@@ -20,6 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':requested_by' => $requested_by,
             ':department' => $department,
             ':date_requested' => $date_requested,
+            ':date_needed' => $date_needed, // Bind the new field
             ':remarks' => $remarks
         ]);
 

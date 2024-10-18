@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <title>Mono - Responsive Admin & Dashboard Template</title>
+  <title>Invexys - Inventory System</title>
     
   <!-- theme meta -->
   <meta name="theme-name" content="mono" />
@@ -30,7 +30,7 @@
   <!-- MONO CSS -->
   <link id="main-css-href" rel="stylesheet" href="../../css/style.css" />
   <!-- FAVICON -->
-  <link href="../../images/favicon.png" rel="shortcut icon" />
+  <link href="../../images/logo-white.png" rel="shortcut icon" />
 
   <script src="../../plugins/nprogress/nprogress.js"></script>
 </head>

@@ -72,12 +72,13 @@
                                     </div>
                             </div>
                         </div>
-
+                    <!--
                         <div class="dropdown d-inline-block ml-3">
                             <button type="button" data-toggle="modal" data-target="#insertPRModal" style="background: none; border: none; padding: 0;">
                                 <span class="mdi mdi-file-plus" style="font-size: 24px; color: green;"></span>
                             </button>
                         </div>
+-->
 
                 </div>
             </div>
@@ -124,32 +125,46 @@ function fetchRequisitionData() {
                     statusClass = '';
                 }
 
+                // Define the dropdown menu with conditional approval button
+                let dropdownMenu = `
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-cog"></i>
+                        </button>
+                        <div class="dropdown-menu">
+                            <button class="dropdown-item" onclick="viewDetails('${requisition.prs_code}')">
+                                <i class="fas fa-eye"></i> View Details
+                            </button>
+                            <!-- 
+                            <button class="dropdown-item" onclick="openUpdateRequisitionModal('${requisition.prs_code}')">
+                                <i class="fas fa-edit"></i> Update
+                            </button> -->  
+                `;
+
+                // Conditionally add the Approve button
+                if (requisition.approval_status === 'Pending') {
+                    dropdownMenu += `
+                            <button class="dropdown-item" onclick="approveRequisition('${requisition.prs_code}')">
+                                <i class="fas fa-check"></i> Approve
+                            </button>
+                    `;
+                }
+
+                // Close the dropdown menu div
+                dropdownMenu += `
+                        </div>
+                    </div>
+                `;
+
+                // Add the requisition data to the table
                 table.row.add([
                     requisition.prs_code,
                     requisition.requested_by,
                     requisition.department,
                     requisition.date_requested,
                     `<span class="${statusClass}">${requisition.approval_status}</span>`,
-                    requisition.approved_by,
-                    `
-                      <div class="btn-group">
-                          <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                              <i class="fas fa-cog"></i>
-                          </button>
-                          <div class="dropdown-menu">
-                              <button class="dropdown-item" onclick="viewDetails('${requisition.prs_code}')">
-                                  <i class="fas fa-eye"></i> View Details
-                              </button>
-                              <button class="dropdown-item" onclick="openUpdateRequisitionModal('${requisition.prs_code}')">
-                                <i class="fas fa-edit"></i> Update
-                            </button>   
-                              <button class="dropdown-item" onclick="deleteRequisition('${requisition.prs_code}')">
-                                  <i class="fas fa-trash-alt"></i> Delete
-                              </button>
-                              
-                          </div>
-                      </div>
-                    `
+                    requisition.approved_by || 'Awaiting Approval', // Default message if approved_by is empty
+                    dropdownMenu
                 ]);
             });
 
@@ -157,6 +172,28 @@ function fetchRequisitionData() {
         })
         .catch(error => console.error('Error fetching requisition data:', error));
 }
+
+function approveRequisition(prsCode) {
+    fetch('fetch/approve_prs.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ prs_code: prsCode }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Optionally refresh the page or update the UI
+            alert('Purchase Requisition approved successfully.');
+            location.reload(); // Refresh the page to see the updated status
+        } else {
+            alert('Error approving Purchase Requisition: ' + data.message);
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
 
 function openUpdateRequisitionModal(prs_code) {
     // Fetch existing requisition data
@@ -399,8 +436,6 @@ function exportTable() {
 }
 
 $(document).ready(function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const prsCode = urlParams.get('prs_code');
     // Initialize DataTable with responsiveness and custom search options
     const table = $('#requisitionsTable').DataTable({
         paging: true,
@@ -408,10 +443,6 @@ $(document).ready(function() {
         pageLength: 5,
         lengthMenu: [[5, 10, 25, -1], [5, 10, 25, "All"]],
     });
-
-    if (prsCode) {
-    table.search(prsCode).draw(); // Search for prs_code
-}
 
     // Fetch requisition data after initializing the DataTable
     fetchRequisitionData();

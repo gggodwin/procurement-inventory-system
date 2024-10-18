@@ -1,4 +1,5 @@
-<?php 
+<?php
+session_start();  
 $current_page = 'inventory';
 $page_number = 2;
 include ("../../misc/header_main.php");

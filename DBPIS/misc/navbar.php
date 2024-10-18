@@ -23,19 +23,19 @@ if ($page_number == 1) {
             <button id="sidebar-toggler" class="sidebar-toggle">
               <span class="sr-only">Toggle navigation</span>
             </button>
+            <span class="page-title" id="currentDateTime"></span>
 
-            <span class="page-title">
-            <?php echo $page_title; ?>
-            </span>
+
 
             <div class="navbar-right ">
               <ul class="nav navbar-nav">
                 <!-- User Account -->
                 <li class="dropdown user-menu">
                   <button class="dropdown-toggle nav-link" data-toggle="dropdown">
-                    <img src="../../images/user/user-xs-01.jpg" class="user-image rounded-circle"/>
-                    <span class="d-none d-lg-inline-block"><?php echo $_SESSION['username']; ?></span>
+                    <!--<img src="../../images/user/user-xs-01.jpg" class="user-image rounded-circle"/>-->
+                    <span class="d-none d-lg-inline-block">Welcome, User <?php echo $_SESSION['username']; ?></span>
                   </button>
+                  <!--
                   <ul class="dropdown-menu dropdown-menu-right">
                     <li>
                       <a class="dropdown-link-item" href="user-profile.html">
@@ -63,11 +63,12 @@ if ($page_number == 1) {
                     </li>
 
                   <li class="dropdown-footer">
-                    <a class="dropdown-link-item" href="#" id="logoutLink"> <!-- Use an ID for AJAX -->
+                    <a class="dropdown-link-item" href="#" id="logoutLink">  Use an ID for AJAX 
                       <i class="mdi mdi-logout"></i> Log Out
                     </a>
                   </li>
                   </ul>
+                  -->
                 </li>
               </ul>
             </div>
@@ -100,6 +101,26 @@ $(document).ready(function() {
             }
         });
     });
+
+    function updateTime() {
+        const options = { 
+            weekday: 'long', 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric', 
+            hour: '2-digit', 
+            minute: '2-digit', 
+            second: '2-digit', 
+            hour12: true, 
+            timeZone: 'Asia/Manila'
+        };
+
+        const now = new Date().toLocaleString('en-US', options);
+        document.getElementById('currentDateTime').innerHTML = now;
+    }
+
+    setInterval(updateTime, 1000); // Update every second
+    updateTime(); // Initial call to display immediately
 });
 </script>
 
